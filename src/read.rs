@@ -24,6 +24,8 @@ pub fn read_records_from_reader<T: DeserializeOwned>(
     match file_format {
         FileFormat::Json => backend::json::read(reader),
         FileFormat::JsonLines => backend::jsonlines::read(reader),
+        #[cfg(feature = "csv")]
+        FileFormat::Csv => backend::csv::read(reader),
     }
 }
 
