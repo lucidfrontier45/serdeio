@@ -35,6 +35,8 @@ pub fn write_records_to_writer<T: Serialize>(
     match file_format {
         FileFormat::Json => backend::json::write(writer, records),
         FileFormat::JsonLines => backend::jsonlines::write(writer, records),
+        #[cfg(feature = "csv")]
+        FileFormat::Csv => backend::csv::write(writer, records),
     }
 }
 

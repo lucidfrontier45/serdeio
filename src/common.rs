@@ -4,6 +4,10 @@ use std::{fmt::Display, path::Path};
 pub enum FileFormat {
     Json,
     JsonLines,
+    #[cfg(feature = "csv")]
+    Csv,
+    #[cfg(feature = "yaml")]
+    Yaml,
 }
 
 impl TryFrom<&str> for FileFormat {
@@ -13,6 +17,10 @@ impl TryFrom<&str> for FileFormat {
         match value.trim().to_lowercase().as_str() {
             "json" => Ok(FileFormat::Json),
             "jsonl" | "jsl" => Ok(FileFormat::JsonLines),
+            #[cfg(feature = "yaml")]
+            "csv" => Ok(FileFormat::Csv),
+            #[cfg(feature = "yaml")]
+            "yaml" | "yml" => Ok(FileFormat::Yaml),
             _ => Err(format!("Unknown file format: {}", value)),
         }
     }
@@ -35,6 +43,10 @@ impl Display for FileFormat {
         match self {
             FileFormat::Json => write!(f, "json"),
             FileFormat::JsonLines => write!(f, "jsonl"),
+            #[cfg(feature = "csv")]
+            FileFormat::Csv => write!(f, "csv"),
+            #[cfg(feature = "yaml")]
+            FileFormat::Yaml => write!(f, "yaml"),
         }
     }
 }
