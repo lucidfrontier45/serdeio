@@ -17,7 +17,7 @@ impl TryFrom<&str> for FileFormat {
         match value.trim().to_lowercase().as_str() {
             "json" => Ok(FileFormat::Json),
             "jsonl" | "jsl" => Ok(FileFormat::JsonLines),
-            #[cfg(feature = "yaml")]
+            #[cfg(feature = "csv")]
             "csv" => Ok(FileFormat::Csv),
             #[cfg(feature = "yaml")]
             "yaml" | "yml" => Ok(FileFormat::Yaml),
