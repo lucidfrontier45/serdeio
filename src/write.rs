@@ -4,45 +4,45 @@ use serde::Serialize;
 
 use crate::{
     backend,
-    common::{FileFormat, Result},
+    common::{DataFormat, Result},
 };
 
 pub fn write_record_to_writer<T: Serialize>(
     writer: impl Write,
-    file_format: FileFormat,
+    data_format: DataFormat,
     record: &T,
 ) -> Result<()> {
-    match file_format {
-        FileFormat::Json => backend::json::write(writer, record),
+    match data_format {
+        DataFormat::Json => backend::json::write(writer, record),
         #[cfg(feature = "yaml")]
-        FileFormat::Yaml => backend::yaml::write(writer, record),
-        _ => Err(format!("Unsupported file format: {}", file_format).into()),
+        DataFormat::Yaml => backend::yaml::write(writer, record),
+        _ => Err(format!("Unsupported file format: {}", data_format).into()),
     }
 }
 
 pub fn write_records_to_writer<T: Serialize>(
     writer: impl Write,
-    file_format: FileFormat,
+    data_format: DataFormat,
     records: &Vec<T>,
 ) -> Result<()> {
-    match file_format {
-        FileFormat::Json => backend::json::write(writer, records),
-        FileFormat::JsonLines => backend::jsonlines::write(writer, records),
+    match data_format {
+        DataFormat::Json => backend::json::write(writer, records),
+        DataFormat::JsonLines => backend::jsonlines::write(writer, records),
         #[cfg(feature = "csv")]
-        FileFormat::Csv => backend::csv::write(writer, records),
+        DataFormat::Csv => backend::csv::write(writer, records),
         #[cfg(feature = "yaml")]
-        FileFormat::Yaml => backend::yaml::write(writer, records),
+        DataFormat::Yaml => backend::yaml::write(writer, records),
     }
 }
 
 pub fn write_record_to_file<T: Serialize>(path: impl AsRef<Path>, records: &T) -> Result<()> {
-    let file_format = FileFormat::try_from(path.as_ref())?;
+    let data_format = DataFormat::try_from(path.as_ref())?;
     let file = File::create(path)?;
-    write_record_to_writer(file, file_format, records)
+    write_record_to_writer(file, data_format, records)
 }
 
 pub fn write_records_to_file<T: Serialize>(path: impl AsRef<Path>, records: &Vec<T>) -> Result<()> {
-    let file_format = FileFormat::try_from(path.as_ref())?;
+    let data_format = DataFormat::try_from(path.as_ref())?;
     let file = File::create(path)?;
-    write_records_to_writer(file, file_format, records)
+    write_records_to_writer(file, data_format, records)
 }

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use recordio::{read_records_from_file, write_records_to_writer, FileFormat};
+use serdeio::{read_records_from_file, write_records_to_writer, DataFormat};
 
 #[derive(Debug, Deserialize, Serialize)]
 struct User {
@@ -19,5 +19,5 @@ fn main() {
 
     // write to stdout in YAML format
     let writer = std::io::stdout();
-    write_records_to_writer(writer, FileFormat::Yaml, &users).unwrap();
+    write_records_to_writer(writer, DataFormat::Yaml, &users).unwrap();
 }
