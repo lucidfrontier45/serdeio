@@ -1,3 +1,4 @@
+use anyhow::{anyhow, Error as AnyError};
 use std::{fmt::Display, path::Path};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -11,7 +12,7 @@ pub enum DataFormat {
 }
 
 impl TryFrom<&str> for DataFormat {
-    type Error = String;
+    type Error = AnyError;
 
     fn try_from(value: &str) -> std::result::Result<Self, Self::Error> {
         match value.trim().to_lowercase().as_str() {
@@ -21,19 +22,19 @@ impl TryFrom<&str> for DataFormat {
             "csv" => Ok(DataFormat::Csv),
             #[cfg(feature = "yaml")]
             "yaml" | "yml" => Ok(DataFormat::Yaml),
-            _ => Err(format!("Unknown data format: {}", value)),
+            _ => Err(anyhow!("Unknown data format: {}", value)),
         }
     }
 }
 
 impl TryFrom<&Path> for DataFormat {
-    type Error = String;
+    type Error = AnyError;
 
     fn try_from(value: &Path) -> std::result::Result<Self, Self::Error> {
         let ext = value
             .extension()
-            .ok_or_else(|| format!("No extension found for file: {}", value.display()))
-            .and_then(|v| v.to_str().ok_or("Invalid extension".to_owned()))?;
+            .ok_or_else(|| anyhow!("No extension found for file: {}", value.display()))
+            .and_then(|v| v.to_str().ok_or(anyhow!("Invalid extension")))?;
         Self::try_from(ext)
     }
 }
@@ -50,8 +51,6 @@ impl Display for DataFormat {
         }
     }
 }
-
-pub(crate) type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Sync + Send>>;
 
 #[cfg(test)]
 mod test {
