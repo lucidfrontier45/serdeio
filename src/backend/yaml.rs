@@ -1,13 +1,12 @@
 use std::io::{Read, Write};
 
+use anyhow::Result as AnyResult;
 use serde::{de::DeserializeOwned, Serialize};
 
-use crate::common::Result;
-
-pub fn read<T: DeserializeOwned>(reader: impl Read) -> Result<T> {
+pub fn read<T: DeserializeOwned>(reader: impl Read) -> AnyResult<T> {
     serde_yaml::from_reader(reader).map_err(|e| e.into())
 }
 
-pub fn write<T: Serialize>(writer: impl Write, record: &T) -> Result<()> {
+pub fn write<T: Serialize>(writer: impl Write, record: &T) -> AnyResult<()> {
     serde_yaml::to_writer(writer, record).map_err(|e| e.into())
 }
