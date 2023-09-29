@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use recordio::{read_records_from_file, write_records_to_writer, FileFormat};
+use serdeio::{read_records_from_file, write_records_to_writer, FileFormat};
 
 #[derive(Debug, Deserialize, Serialize)]
 struct User {
