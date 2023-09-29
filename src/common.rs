@@ -1,7 +1,7 @@
 use std::{fmt::Display, path::Path};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
-pub enum FileFormat {
+pub enum DataFormat {
     Json,
     JsonLines,
     #[cfg(feature = "csv")]
@@ -10,23 +10,23 @@ pub enum FileFormat {
     Yaml,
 }
 
-impl TryFrom<&str> for FileFormat {
+impl TryFrom<&str> for DataFormat {
     type Error = String;
 
     fn try_from(value: &str) -> std::result::Result<Self, Self::Error> {
         match value.trim().to_lowercase().as_str() {
-            "json" => Ok(FileFormat::Json),
-            "jsonl" | "jsl" => Ok(FileFormat::JsonLines),
+            "json" => Ok(DataFormat::Json),
+            "jsonl" | "jsl" => Ok(DataFormat::JsonLines),
             #[cfg(feature = "csv")]
-            "csv" => Ok(FileFormat::Csv),
+            "csv" => Ok(DataFormat::Csv),
             #[cfg(feature = "yaml")]
-            "yaml" | "yml" => Ok(FileFormat::Yaml),
-            _ => Err(format!("Unknown file format: {}", value)),
+            "yaml" | "yml" => Ok(DataFormat::Yaml),
+            _ => Err(format!("Unknown data format: {}", value)),
         }
     }
 }
 
-impl TryFrom<&Path> for FileFormat {
+impl TryFrom<&Path> for DataFormat {
     type Error = String;
 
     fn try_from(value: &Path) -> std::result::Result<Self, Self::Error> {
@@ -38,15 +38,15 @@ impl TryFrom<&Path> for FileFormat {
     }
 }
 
-impl Display for FileFormat {
+impl Display for DataFormat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            FileFormat::Json => write!(f, "json"),
-            FileFormat::JsonLines => write!(f, "jsonl"),
+            DataFormat::Json => write!(f, "json"),
+            DataFormat::JsonLines => write!(f, "jsonl"),
             #[cfg(feature = "csv")]
-            FileFormat::Csv => write!(f, "csv"),
+            DataFormat::Csv => write!(f, "csv"),
             #[cfg(feature = "yaml")]
-            FileFormat::Yaml => write!(f, "yaml"),
+            DataFormat::Yaml => write!(f, "yaml"),
         }
     }
 }
@@ -56,18 +56,18 @@ pub(crate) type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 #[cfg(test)]
 mod test {
     #[test]
-    fn test_file_format() {
-        use super::FileFormat;
+    fn test_data_format() {
+        use super::DataFormat;
         use std::convert::TryFrom;
-        assert_eq!(FileFormat::try_from("json").unwrap(), FileFormat::Json);
+        assert_eq!(DataFormat::try_from("json").unwrap(), DataFormat::Json);
         assert_eq!(
-            FileFormat::try_from("jsonl").unwrap(),
-            FileFormat::JsonLines
+            DataFormat::try_from("jsonl").unwrap(),
+            DataFormat::JsonLines
         );
-        assert_eq!(FileFormat::try_from("JSON").unwrap(), FileFormat::Json);
+        assert_eq!(DataFormat::try_from("JSON").unwrap(), DataFormat::Json);
         assert_eq!(
-            FileFormat::try_from("JSONL").unwrap(),
-            FileFormat::JsonLines
+            DataFormat::try_from("JSONL").unwrap(),
+            DataFormat::JsonLines
         );
     }
 }
