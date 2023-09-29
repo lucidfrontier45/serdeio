@@ -1,0 +1,27 @@
+[package]
+name = "serdeio"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["Du Shiqiao <lucidfrontier.45@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/lucidfrontier45/serdeio"
+description = "Tiny IO utility library for Rust to serialize/deserialize Serde compatible structs"
+keywords = ["serde", "io", "csv", "yaml", "json"]
+categories = ["io-util", "serialization"]
+
+[lib]
+name = "serdeio"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = { version = "0.9", optional = true }
+csv = { version = "1", optional = true }
+
+[features]
+csv = ["dep:csv"]
+yaml = ["dep:serde_yaml"]
+
+[package.metadata.docs.rs]
+all-features = true

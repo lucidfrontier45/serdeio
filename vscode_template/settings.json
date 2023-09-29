@@ -1,0 +1,10 @@
+{
+    "[rust]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "file"
+    },
+    "rust-analyzer.check.command": "clippy",
+    "rust-analyzer.imports.group.enable": true,
+    "rust-analyzer.imports.granularity.group": "crate",
+    "rust-analyzer.imports.granularity.enforce": true,
+}
