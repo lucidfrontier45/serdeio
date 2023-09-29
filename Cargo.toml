@@ -1,6 +1,6 @@
 [package]
 name = "serdeio"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 license = "MIT"
 authors = ["Du Shiqiao <lucidfrontier.45@gmail.com>"]
@@ -13,14 +13,13 @@ categories = ["io-util", "serialization"]
 
 [lib]
 name = "serdeio"
+doctest = false
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serde_yaml = { version = "0.9", optional = true }
 csv = { version = "1", optional = true }
-
-[dev-dependencies]
 anyhow = "1"
 
 [features]

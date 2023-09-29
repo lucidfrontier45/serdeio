@@ -26,8 +26,9 @@ Note that some data format like CSV and JSON Lines support only reading records 
 The following code read a JSON file and parse it as `Vec<User>`. Then it encodes the data into YAML format and write it to STDOUT.
 
 ```rust
+use anyhow::{anyhow, Context, Result as AnyResult};
 use serde::{Deserialize, Serialize};
-use serdeio::{read_records_from_file, write_records_to_writer, DataFormat};
+use serdeio::{read_record_from_file, write_records_to_writer, DataFormat};
 
 #[derive(Debug, Deserialize, Serialize)]
 struct User {
@@ -36,16 +37,19 @@ struct User {
     items: Vec<String>,
 }
 
-fn main() {
+pub fn main() -> AnyResult<()> {
     // get input file path from argv
     let args: Vec<String> = std::env::args().collect();
     let input_file_path = &args[1];
 
-    // read to memory
-    let users: Vec<User> = read_records_from_file(input_file_path).unwrap();
+    // read json file to memory
+    let users: Vec<User> = read_record_from_file(input_file_path)
+        .context("Failed to read records from file")?;
 
-    // write to stdout in YAML format
+    // write to stdout in json lines format
     let writer = std::io::stdout();
-    write_records_to_writer(writer, DataFormat::Yaml, &users).unwrap();
+    write_records_to_writer(writer, DataFormat::JsonLines, &users).unwrap();
+
+    Ok(())
 }
 ```

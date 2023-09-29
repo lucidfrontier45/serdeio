@@ -1,10 +1,9 @@
 use std::io::{Read, Write};
 
+use anyhow::Result as AnyResult;
 use serde::{de::DeserializeOwned, Serialize};
 
-use crate::common::Result;
-
-pub fn read<T: DeserializeOwned>(reader: impl Read) -> Result<Vec<T>> {
+pub fn read<T: DeserializeOwned>(reader: impl Read) -> AnyResult<Vec<T>> {
     let mut rdr = csv::Reader::from_reader(reader);
     let mut records: Vec<T> = Vec::new();
     for result in rdr.deserialize() {
@@ -14,7 +13,7 @@ pub fn read<T: DeserializeOwned>(reader: impl Read) -> Result<Vec<T>> {
     Ok(records)
 }
 
-pub fn write<T: Serialize>(writer: impl Write, records: &[T]) -> Result<()> {
+pub fn write<T: Serialize>(writer: impl Write, records: &[T]) -> AnyResult<()> {
     let mut wtr = csv::Writer::from_writer(writer);
     for record in records {
         wtr.serialize(record)?;
