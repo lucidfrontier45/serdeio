@@ -1,7 +1,7 @@
 use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 
-use serde::{de::DeserializeOwned, Serialize};
 use anyhow::Result as AnyResult;
+use serde::{de::DeserializeOwned, Serialize};
 
 pub fn read<T: DeserializeOwned>(reader: impl Read) -> AnyResult<Vec<T>> {
     let reader = BufReader::new(reader);
@@ -14,7 +14,10 @@ pub fn read<T: DeserializeOwned>(reader: impl Read) -> AnyResult<Vec<T>> {
     Ok(records)
 }
 
-pub fn write<T: Serialize>(writer: impl Write, records: &[T]) -> AnyResult<()> {
+pub fn write<'a, T: Serialize + 'a>(
+    writer: impl Write,
+    records: impl IntoIterator<Item = &'a T>,
+) -> AnyResult<()> {
     let mut writer = BufWriter::new(writer);
     for record in records {
         let line = serde_json::to_string(record)?;
