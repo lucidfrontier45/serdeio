@@ -18,18 +18,18 @@ pub fn write_record_to_writer<T: Serialize>(
     }
 }
 
-pub fn write_records_to_writer<T: Serialize>(
+pub fn write_records_to_writer<'a, T: Serialize + 'a>(
     writer: impl Write,
     data_format: DataFormat,
-    records: &Vec<T>,
+    records: impl IntoIterator<Item = &'a T>,
 ) -> AnyResult<()> {
     match data_format {
-        DataFormat::Json => backend::json::write(writer, records),
+        DataFormat::Json => backend::json::write(writer, &records.into_iter().collect::<Vec<_>>()),
         DataFormat::JsonLines => backend::jsonlines::write(writer, records),
         #[cfg(feature = "csv")]
         DataFormat::Csv => backend::csv::write(writer, records),
         #[cfg(feature = "yaml")]
-        DataFormat::Yaml => backend::yaml::write(writer, records),
+        DataFormat::Yaml => backend::yaml::write(writer, &records.into_iter().collect::<Vec<_>>()),
     }
 }
 
