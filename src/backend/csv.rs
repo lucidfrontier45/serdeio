@@ -13,7 +13,10 @@ pub fn read<T: DeserializeOwned>(reader: impl Read) -> AnyResult<Vec<T>> {
     Ok(records)
 }
 
-pub fn write<T: Serialize>(writer: impl Write, records: &[T]) -> AnyResult<()> {
+pub fn write<'a, T: Serialize + 'a>(
+    writer: impl Write,
+    records: impl IntoIterator<Item = &'a T>,
+) -> AnyResult<()> {
     let mut wtr = csv::Writer::from_writer(writer);
     for record in records {
         wtr.serialize(record)?;
