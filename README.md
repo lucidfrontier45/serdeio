@@ -1,4 +1,4 @@
-# Serdeio
+# SerdeIO
 Tiny IO utility library for Rust to serialize/deserialize Serde compatible structs
 
 # Install
@@ -7,7 +7,7 @@ Tiny IO utility library for Rust to serialize/deserialize Serde compatible struc
 cargo add serdeio
 ```
 
-Serdeio supports JSON and JSON Lines formats. Additional formats are supported by enabling corresponding features.
+SerdeIO supports JSON and JSON Lines formats. Additional formats are supported by enabling corresponding features.
 
 - `yaml`
 - `csv`
