@@ -1,4 +1,8 @@
-use std::{fs::File, io::Read, path::Path};
+use std::{
+    fs::File,
+    io::{BufReader, Read},
+    path::Path,
+};
 
 use anyhow::{anyhow, Result as AnyResult};
 use serde::de::DeserializeOwned;
@@ -34,11 +38,13 @@ pub fn read_records_from_reader<T: DeserializeOwned>(
 pub fn read_record_from_file<T: DeserializeOwned>(path: impl AsRef<Path>) -> AnyResult<T> {
     let data_format = DataFormat::try_from(path.as_ref())?;
     let file = File::open(path)?;
-    read_record_from_reader(file, data_format)
+    let rdr = BufReader::new(file);
+    read_record_from_reader(rdr, data_format)
 }
 
 pub fn read_records_from_file<T: DeserializeOwned>(path: impl AsRef<Path>) -> AnyResult<Vec<T>> {
     let data_format = DataFormat::try_from(path.as_ref())?;
     let file = File::open(path)?;
-    read_records_from_reader(file, data_format)
+    let rdr = BufReader::new(file);
+    read_records_from_reader(rdr, data_format)
 }
