@@ -9,7 +9,7 @@ repository = "https://github.com/lucidfrontier45/serdeio"
 documentation = "https://docs.rs/serdeio"
 description = "Tiny IO utility library for Rust to serialize/deserialize Serde compatible structs"
 keywords = ["serde", "io", "csv", "yaml", "json"]
-categories = ["io-util", "serialization"]
+categories = ["parsing"]
 
 [lib]
 name = "serdeio"
