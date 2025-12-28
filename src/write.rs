@@ -1,6 +1,6 @@
 use std::{fs::File, io::Write, path::Path};
 
-use anyhow::{anyhow, Result as AnyResult};
+use anyhow::{Result as AnyResult, anyhow};
 use serde::Serialize;
 
 use crate::{backend, types::DataFormat};

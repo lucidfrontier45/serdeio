@@ -4,7 +4,7 @@
 SerdeIO is a tiny IO utility library for Rust that provides serialization/deserialization of Serde-compatible structs across multiple data formats. It's a minimal, focused library that makes it easy to read and write structured data in various formats.
 
 ## Tech Stack
-- **Language**: Rust (edition 2021)
+- **Language**: Rust (edition 2024)
 - **Core Dependencies**: 
   - serde (with derive feature)
   - serde_json

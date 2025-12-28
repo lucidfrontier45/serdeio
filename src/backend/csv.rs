@@ -1,7 +1,7 @@
 use std::io::{Read, Write};
 
 use anyhow::Result as AnyResult;
-use serde::{de::DeserializeOwned, Serialize};
+use serde::{Serialize, de::DeserializeOwned};
 
 pub fn read<T: DeserializeOwned>(reader: impl Read) -> AnyResult<Vec<T>> {
     let mut rdr = csv::Reader::from_reader(reader);

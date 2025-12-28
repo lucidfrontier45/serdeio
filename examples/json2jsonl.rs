@@ -1,6 +1,6 @@
-use anyhow::{anyhow, Context, Result as AnyResult};
+use anyhow::{Context, Result as AnyResult, anyhow};
 use serde::{Deserialize, Serialize};
-use serdeio::{read_record_from_file, write_records_to_writer, DataFormat};
+use serdeio::{DataFormat, read_record_from_file, write_records_to_writer};
 
 #[derive(Debug, Deserialize, Serialize)]
 struct User {

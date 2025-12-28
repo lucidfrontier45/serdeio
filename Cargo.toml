@@ -1,7 +1,7 @@
 [package]
 name = "serdeio"
 version = "0.4.1"
-edition = "2021"
+edition = "2024"
 license = "MIT"
 authors = ["Du Shiqiao <lucidfrontier.45@gmail.com>"]
 readme = "README.md"
