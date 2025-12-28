@@ -1,5 +1,6 @@
-use anyhow::{Error as AnyError, anyhow};
 use std::{fmt::Display, path::Path};
+
+use anyhow::{Error as AnyError, anyhow};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum DataFormat {
