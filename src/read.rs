@@ -6,7 +6,7 @@ use std::{
 
 use serde::de::DeserializeOwned;
 
-use crate::{backend, types::DataFormat, Error};
+use crate::{Error, backend, types::DataFormat};
 
 pub fn read_record_from_reader<T: DeserializeOwned>(
     reader: impl Read,
@@ -46,7 +46,9 @@ pub fn read_record_from_file<T: DeserializeOwned>(path: impl AsRef<Path>) -> Res
     read_record_from_reader(rdr, data_format)
 }
 
-pub fn read_records_from_file<T: DeserializeOwned>(path: impl AsRef<Path>) -> Result<Vec<T>, Error> {
+pub fn read_records_from_file<T: DeserializeOwned>(
+    path: impl AsRef<Path>,
+) -> Result<Vec<T>, Error> {
     let (data_format, rdr) = open_file(path)?;
     read_records_from_reader(rdr, data_format)
 }

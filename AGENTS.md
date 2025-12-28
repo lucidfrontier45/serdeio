@@ -51,8 +51,8 @@ cargo run --example json2jsonl -- <input_file>
 ```rust
 use std::{fs::File, io::{Read, Write}, path::Path};
 
-use thiserror::Error;
 use serde::{de::DeserializeOwned, Serialize};
+use thiserror::Error;
 
 use crate::{backend, types::DataFormat, Error};
 ```

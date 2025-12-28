@@ -2,7 +2,7 @@ use std::{fs::File, io::Write, path::Path};
 
 use serde::Serialize;
 
-use crate::{backend, types::DataFormat, Error};
+use crate::{Error, backend, types::DataFormat};
 
 pub fn write_record_to_writer<T: Serialize>(
     writer: impl Write,
@@ -32,7 +32,10 @@ pub fn write_records_to_writer<'a, T: Serialize + 'a>(
     }
 }
 
-pub fn write_record_to_file<T: Serialize>(path: impl AsRef<Path>, records: &T) -> Result<(), Error> {
+pub fn write_record_to_file<T: Serialize>(
+    path: impl AsRef<Path>,
+    records: &T,
+) -> Result<(), Error> {
     let data_format = DataFormat::try_from(path.as_ref())?;
     let file = File::create(path)?;
     write_record_to_writer(file, data_format, records)
