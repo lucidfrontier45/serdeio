@@ -1,4 +1,4 @@
-use anyhow::{Context, Result as AnyResult, anyhow};
+use anyhow::{Context, Result as AnyResult};
 use serde::{Deserialize, Serialize};
 use serdeio::{DataFormat, read_record_from_file, write_records_to_writer};
 
@@ -15,9 +15,8 @@ pub fn main() -> AnyResult<()> {
     let input_file_path = &args[1];
 
     // read json to memory
-    let users: Vec<User> = read_record_from_file(input_file_path)
-        .map_err(|e| anyhow! {e})
-        .context("Failed to read records from file")?;
+    let users: Vec<User> =
+        read_record_from_file(input_file_path).context("Failed to read records from file")?;
 
     // write to stdout in json lines format
     let writer = std::io::stdout();

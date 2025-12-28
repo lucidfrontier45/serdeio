@@ -3,10 +3,12 @@
 #![doc = include_str!("../README.md")]
 
 pub(crate) mod backend;
+pub(crate) mod error;
 pub(crate) mod read;
 pub(crate) mod types;
 pub(crate) mod write;
 
+pub use error::Error;
 pub use read::{
     read_record_from_file, read_record_from_reader, read_records_from_file,
     read_records_from_reader,

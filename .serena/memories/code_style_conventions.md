@@ -7,10 +7,10 @@
 ```rust
 use std::{fs::File, io::{Read, Write}, path::Path};
 
-use anyhow::{anyhow, Result as AnyResult};
 use serde::{de::DeserializeOwned, Serialize};
+use thiserror::Error;
 
-use crate::{backend, types::DataFormat};
+use crate::{backend, types::DataFormat, Error};
 ```
 
 ## Naming Conventions
@@ -21,20 +21,27 @@ use crate::{backend, types::DataFormat};
 - **Modules**: snake_case (e.g., `jsonlines`, `backend`)
 
 ## Error Handling Patterns
-- **Primary Error Type**: `anyhow::Result<T>` (aliased as `AnyResult`)
-- **Error Context**: Use `anyhow!()` macro for error creation
-- **Error Propagation**: Use `?` operator consistently
-- **Error Messages**: Provide context with descriptive messages
+- **Primary Error Type**: `Result<T, crate::Error>` using dedicated error enum
+- **Error Derivation**: Use `thiserror` for structured error types
+- **Error Variants**: Define specific variants for different error conditions
+- **Error Propagation**: Use `#[from]` derives and `?` operator
+- **Error Messages**: Define in error variants with `#[error(...)]` attributes
 ```rust
-.map_err(|e| anyhow! {e})
-.context("Failed to read records from file")?;
+#[derive(thiserror::Error, Debug)]
+pub enum Error {
+    #[error("IO error: {0}")]
+    Io(#[from] std::io::Error),
+    #[error("Parse error: {0}")]
+    Json(#[from] serde_json::Error),
+    // ... other variants
+}
 ```
 
 ## Type System Guidelines
 - **Generic Constraints**: Use trait bounds like `T: DeserializeOwned`, `T: Serialize`
 - **Function Parameters**: Prefer `impl Trait` over concrete types for flexibility
 - **Lifetime Parameters**: Use `'a` for iterator bounds when needed
-- **Result Types**: Always use `anyhow::Result<T>` for fallible operations
+- **Result Types**: Always use `Result<T, crate::Error>` for fallible operations
 
 ## Module Structure
 - **Visibility**: Use `pub(crate)` for internal modules
