@@ -125,6 +125,24 @@ use crate::{backend, types::DataFormat, Error};
 4. Run `cargo test` to verify functionality
 5. Test with different feature combinations if applicable
 
+## Serena MCP Tools
+
+Serena MCP provides advanced code intelligence tools for efficient codebase exploration and manipulation. Use these tools for:
+
+- **Code Analysis**: Use `serena_get_symbols_overview`, `serena_find_symbol`, `serena_find_referencing_symbols` to understand code structure and dependencies.
+
+- **Search Operations**: Use `serena_search_for_pattern`, `serena_list_dir`, `serena_find_file` for finding files and patterns.
+
+- **Code Modification**: Use `serena_replace_symbol_body`, `serena_insert_after_symbol`, `serena_insert_before_symbol`, `serena_rename_symbol` for precise code edits.
+
+- **Memory Management**: Use `serena_write_memory`, `serena_read_memory`, `serena_list_memories`, `serena_edit_memory` for storing and retrieving project knowledge.
+
+- **Project Management**: Use `serena_activate_project`, `serena_get_current_config`, `serena_check_onboarding_performed`, `serena_onboarding` for project setup.
+
+- **Thinking Tools**: Use `serena_think_about_collected_information`, `serena_think_about_task_adherence`, `serena_think_about_whether_you_are_done` to maintain focus and completeness.
+
+Always check onboarding status with `serena_check_onboarding_performed` before starting work, and perform onboarding if needed.
+
 ## Common Pitfalls to Avoid
 - Don't use unwrap() in library code - prefer proper error handling
 - Don't forget to feature-gate optional dependencies
