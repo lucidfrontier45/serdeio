@@ -51,10 +51,10 @@ cargo run --example json2jsonl -- <input_file>
 ```rust
 use std::{fs::File, io::{Read, Write}, path::Path};
 
-use anyhow::{anyhow, Result as AnyResult};
+use thiserror::Error;
 use serde::{de::DeserializeOwned, Serialize};
 
-use crate::{backend, types::DataFormat};
+use crate::{backend, types::DataFormat, Error};
 ```
 
 ### Naming Conventions
@@ -65,20 +65,16 @@ use crate::{backend, types::DataFormat};
 - **Modules**: snake_case (e.g., `jsonlines`, `backend`)
 
 ### Error Handling
-- Use `anyhow::Result<T>` as the primary error type (aliased as `AnyResult`)
-- Error contexts are added using `anyhow!()` macro
-- Use `?` operator for error propagation
-- Specific error messages with context:
-```rust
-.map_err(|e| anyhow! {e})
-.context("Failed to read records from file")?;
-```
+- Use dedicated `Error` enum with `thiserror` for structured error types
+- Error variants include `DataFormat`, `UnsupportedFormat`, `Io`, `Json`, `Csv`, `Yaml`
+- Use `?` operator for error propagation through `#[from]` derives
+- Specific error messages defined in error variants
 
 ### Type System
 - Use generic type parameters with trait bounds: `T: DeserializeOwned`, `T: Serialize`
 - Prefer `impl Trait` over concrete types in function parameters for flexibility
 - Use lifetime parameters where needed: `'a` for iterator bounds
-- Result types: `anyhow::Result<T>` for operations that can fail
+- Result types: `Result<T, crate::Error>` for operations that can fail
 
 ### Module Structure
 - `pub(crate)` for internal modules that are not part of public API

@@ -1,20 +1,19 @@
 use std::{fs::File, io::Write, path::Path};
 
-use anyhow::{Result as AnyResult, anyhow};
 use serde::Serialize;
 
-use crate::{backend, types::DataFormat};
+use crate::{backend, types::DataFormat, Error};
 
 pub fn write_record_to_writer<T: Serialize>(
     writer: impl Write,
     data_format: DataFormat,
     record: &T,
-) -> AnyResult<()> {
+) -> Result<(), Error> {
     match data_format {
         DataFormat::Json => backend::json::write(writer, record),
         #[cfg(feature = "yaml")]
         DataFormat::Yaml => backend::yaml::write(writer, record),
-        _ => Err(anyhow!("Unsupported file format: {}", data_format)),
+        _ => Err(Error::UnsupportedFormat(data_format)),
     }
 }
 
@@ -22,7 +21,7 @@ pub fn write_records_to_writer<'a, T: Serialize + 'a>(
     writer: impl Write,
     data_format: DataFormat,
     records: impl IntoIterator<Item = &'a T>,
-) -> AnyResult<()> {
+) -> Result<(), Error> {
     match data_format {
         DataFormat::Json => backend::json::write(writer, &records.into_iter().collect::<Vec<_>>()),
         DataFormat::JsonLines => backend::jsonlines::write(writer, records),
@@ -33,7 +32,7 @@ pub fn write_records_to_writer<'a, T: Serialize + 'a>(
     }
 }
 
-pub fn write_record_to_file<T: Serialize>(path: impl AsRef<Path>, records: &T) -> AnyResult<()> {
+pub fn write_record_to_file<T: Serialize>(path: impl AsRef<Path>, records: &T) -> Result<(), Error> {
     let data_format = DataFormat::try_from(path.as_ref())?;
     let file = File::create(path)?;
     write_record_to_writer(file, data_format, records)
@@ -42,7 +41,7 @@ pub fn write_record_to_file<T: Serialize>(path: impl AsRef<Path>, records: &T) -
 pub fn write_records_to_file<T: Serialize>(
     path: impl AsRef<Path>,
     records: &Vec<T>,
-) -> AnyResult<()> {
+) -> Result<(), Error> {
     let data_format = DataFormat::try_from(path.as_ref())?;
     let file = File::create(path)?;
     write_records_to_writer(file, data_format, records)

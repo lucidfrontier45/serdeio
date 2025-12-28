@@ -1,6 +1,6 @@
 use std::{fmt::Display, path::Path};
 
-use anyhow::{Error as AnyError, anyhow};
+use thiserror::Error;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum DataFormat {
@@ -12,8 +12,18 @@ pub enum DataFormat {
     Yaml,
 }
 
+#[derive(Error, Debug)]
+pub enum DataFormatError {
+    #[error("Unknown data format: {0}")]
+    Unknown(String),
+    #[error("No extension found for file: {}", .0.display())]
+    NoExtension(std::path::PathBuf),
+    #[error("Invalid extension")]
+    InvalidExtension,
+}
+
 impl TryFrom<&str> for DataFormat {
-    type Error = AnyError;
+    type Error = DataFormatError;
 
     fn try_from(value: &str) -> std::result::Result<Self, Self::Error> {
         match value.trim().to_lowercase().as_str() {
@@ -23,19 +33,19 @@ impl TryFrom<&str> for DataFormat {
             "csv" => Ok(DataFormat::Csv),
             #[cfg(feature = "yaml")]
             "yaml" | "yml" => Ok(DataFormat::Yaml),
-            _ => Err(anyhow!("Unknown data format: {}", value)),
+            _ => Err(DataFormatError::Unknown(value.to_string())),
         }
     }
 }
 
 impl TryFrom<&Path> for DataFormat {
-    type Error = AnyError;
+    type Error = DataFormatError;
 
     fn try_from(value: &Path) -> std::result::Result<Self, Self::Error> {
         let ext = value
             .extension()
-            .ok_or_else(|| anyhow!("No extension found for file: {}", value.display()))
-            .and_then(|v| v.to_str().ok_or(anyhow!("Invalid extension")))?;
+            .ok_or_else(|| DataFormatError::NoExtension(value.to_path_buf()))
+            .and_then(|v| v.to_str().ok_or(DataFormatError::InvalidExtension))?;
         Self::try_from(ext)
     }
 }
