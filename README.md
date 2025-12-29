@@ -1,4 +1,4 @@
-# SerdeIO
+<img src="logo_wide.png" alt="SerdeIO Logo" width="600">
 
 [![Crates.io](https://img.shields.io/crates/v/serdeio)](https://crates.io/crates/serdeio)
 [![Documentation](https://docs.rs/serdeio/badge.svg)](https://docs.rs/serdeio)
@@ -27,12 +27,12 @@ cargo add serdeio --features csv,yaml
 
 # Supported Formats
 
-| Format     | Extensions      | Single Record | Multiple Records | Feature Flag |
-|------------|-----------------|---------------|------------------|--------------|
-| JSON       | `.json`         | ✓             | ✓                | (default)    |
-| JSON Lines | `.jsonl`, `.jsl`| ✗             | ✓                | (default)    |
-| CSV        | `.csv`          | ✗             | ✓                | `csv`        |
-| YAML       | `.yaml`, `.yml` | ✓             | ✓                | `yaml`       |
+| Format     | Extensions       | Single Record | Multiple Records | Feature Flag |
+| ---------- | ---------------- | ------------- | ---------------- | ------------ |
+| JSON       | `.json`          | ✓             | ✓                | (default)    |
+| JSON Lines | `.jsonl`, `.jsl` | ✗             | ✓                | (default)    |
+| CSV        | `.csv`           | ✗             | ✓                | `csv`        |
+| YAML       | `.yaml`, `.yml`  | ✓             | ✓                | `yaml`       |
 
 # Features
 
