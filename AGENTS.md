@@ -4,7 +4,7 @@ This guide helps agentic coding agents work effectively with the SerdeIO Rust li
 
 ## Project Overview
 
-SerdeIO is a tiny IO utility library for Rust that provides serialization/deserialization of Serde-compatible structs across multiple data formats (JSON, JSON Lines, CSV, YAML).
+SerdeIO is a tiny IO utility library for Rust that provides serialization/deserialization of Serde-compatible structs across multiple data formats (JSON, JSON Lines, CSV, YAML, MessagePack).
 
 ## Build/Test Commands
 
@@ -96,7 +96,7 @@ use crate::{backend, types::DataFormat, Error};
 - Prefer `to_owned()` or `to_string()` over `clone()` for string conversions
 
 ### Feature Flags
-- Optional backends are feature-gated: `#[cfg(feature = "csv")]`, `#[cfg(feature = "yaml")]`
+- Optional backends are feature-gated: `#[cfg(feature = "csv")]`, `#[cfg(feature = "yaml")]`, `#[cfg(feature = "messagepack")]`
 - Always test both with and without features enabled
 - Conditional compilation for format-specific code paths
 

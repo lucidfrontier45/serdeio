@@ -4,7 +4,7 @@
 [![Documentation](https://docs.rs/serdeio/badge.svg)](https://docs.rs/serdeio)
 [![License](https://img.shields.io/crates/l/serdeio)](https://github.com/lucidfrontier45/serdeio/blob/main/LICENSE)
 
-A lightweight Rust library for seamless serialization/deserialization of Serde-compatible structs across multiple data formats.
+A lightweight Rust library for seamless serialization/deserialization of Serde-compatible structs across JSON, JSON Lines, CSV, YAML, and MessagePack formats.
 
 # Install
 
@@ -21,18 +21,22 @@ cargo add serdeio --features csv
 # For YAML support
 cargo add serdeio --features yaml
 
+# For MessagePack support
+cargo add serdeio --features messagepack
+
 # For both CSV and YAML
 cargo add serdeio --features csv,yaml
 ```
 
 # Supported Formats
 
-| Format     | Extensions       | Single Record | Multiple Records | Feature Flag |
-| ---------- | ---------------- | ------------- | ---------------- | ------------ |
-| JSON       | `.json`          | ✓             | ✓                | (default)    |
-| JSON Lines | `.jsonl`, `.jsl` | ✗             | ✓                | (default)    |
-| CSV        | `.csv`           | ✗             | ✓                | `csv`        |
-| YAML       | `.yaml`, `.yml`  | ✓             | ✓                | `yaml`       |
+| Format      | Extensions                   | Single Record | Multiple Records | Feature Flag  |
+| ----------- | ---------------------------- | ------------- | ---------------- | ------------- |
+| JSON        | `.json`                      | ✓             | ✓                | (default)     |
+| JSON Lines  | `.jsonl`, `.jsl`             | ✗             | ✓                | (default)     |
+| CSV         | `.csv`                       | ✗             | ✓                | `csv`         |
+| YAML        | `.yaml`, `.yml`              | ✓             | ✓                | `yaml`        |
+| MessagePack | `.msgpack`, `.mpack`, `.mpk` | ✓             | ✓                | `messagepack` |
 
 # Features
 
