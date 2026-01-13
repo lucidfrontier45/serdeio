@@ -16,6 +16,8 @@ pub fn read_record_from_reader<T: DeserializeOwned>(
         DataFormat::Json => backend::json::read(reader),
         #[cfg(feature = "yaml")]
         DataFormat::Yaml => backend::yaml::read(reader),
+        #[cfg(feature = "messagepack")]
+        DataFormat::MessagePack => backend::messagepack::read(reader),
         _ => Err(Error::UnsupportedFormat(data_format)),
     }
 }
@@ -31,6 +33,8 @@ pub fn read_records_from_reader<T: DeserializeOwned>(
         DataFormat::Csv => backend::csv::read(reader),
         #[cfg(feature = "yaml")]
         DataFormat::Yaml => backend::yaml::read(reader),
+        #[cfg(feature = "messagepack")]
+        DataFormat::MessagePack => backend::messagepack::read(reader),
     }
 }
 

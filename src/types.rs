@@ -10,6 +10,8 @@ pub enum DataFormat {
     Csv,
     #[cfg(feature = "yaml")]
     Yaml,
+    #[cfg(feature = "messagepack")]
+    MessagePack,
 }
 
 #[derive(Error, Debug)]
@@ -33,6 +35,8 @@ impl TryFrom<&str> for DataFormat {
             "csv" => Ok(DataFormat::Csv),
             #[cfg(feature = "yaml")]
             "yaml" | "yml" => Ok(DataFormat::Yaml),
+            #[cfg(feature = "messagepack")]
+            "msgpack" | "mpack" | "mpk" => Ok(DataFormat::MessagePack),
             _ => Err(DataFormatError::Unknown(value.to_string())),
         }
     }
@@ -59,6 +63,8 @@ impl Display for DataFormat {
             DataFormat::Csv => write!(f, "csv"),
             #[cfg(feature = "yaml")]
             DataFormat::Yaml => write!(f, "yaml"),
+            #[cfg(feature = "messagepack")]
+            DataFormat::MessagePack => write!(f, "messagepack"),
         }
     }
 }

@@ -13,6 +13,7 @@ pub fn write_record_to_writer<T: Serialize>(
         DataFormat::Json => backend::json::write(writer, record),
         #[cfg(feature = "yaml")]
         DataFormat::Yaml => backend::yaml::write(writer, record),
+        DataFormat::MessagePack => backend::messagepack::write(writer, record),
         _ => Err(Error::UnsupportedFormat(data_format)),
     }
 }
@@ -29,6 +30,9 @@ pub fn write_records_to_writer<'a, T: Serialize + 'a>(
         DataFormat::Csv => backend::csv::write(writer, records),
         #[cfg(feature = "yaml")]
         DataFormat::Yaml => backend::yaml::write(writer, &records.into_iter().collect::<Vec<_>>()),
+        DataFormat::MessagePack => {
+            backend::messagepack::write(writer, &records.into_iter().collect::<Vec<_>>())
+        }
     }
 }
 

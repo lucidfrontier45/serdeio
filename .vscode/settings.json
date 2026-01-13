@@ -8,4 +8,5 @@
     "rust-analyzer.imports.granularity.group": "crate",
     "rust-analyzer.imports.granularity.enforce": true,
     "rust-analyzer.testExplorer": true,
+    "rust-analyzer.cargo.features": "all",
 }

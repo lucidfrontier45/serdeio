@@ -6,3 +6,6 @@ pub mod csv;
 
 #[cfg(feature = "yaml")]
 pub mod yaml;
+
+#[cfg(feature = "messagepack")]
+pub mod messagepack;
