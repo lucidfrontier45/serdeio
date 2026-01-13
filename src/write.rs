@@ -42,18 +42,15 @@ pub fn write_records_to_writer<'a, T: Serialize + 'a>(
     }
 }
 
-pub fn write_record_to_file<T: Serialize>(
-    path: impl AsRef<Path>,
-    records: &T,
-) -> Result<(), Error> {
+pub fn write_record_to_file<T: Serialize>(path: impl AsRef<Path>, record: &T) -> Result<(), Error> {
     let data_format = DataFormat::try_from(path.as_ref())?;
     let file = File::create(path)?;
-    write_record_to_writer(file, data_format, records)
+    write_record_to_writer(file, data_format, record)
 }
 
-pub fn write_records_to_file<T: Serialize>(
+pub fn write_records_to_file<'a, T: Serialize + 'a, I: IntoIterator<Item = &'a T>>(
     path: impl AsRef<Path>,
-    records: &Vec<T>,
+    records: I,
 ) -> Result<(), Error> {
     let data_format = DataFormat::try_from(path.as_ref())?;
     let file = File::create(path)?;

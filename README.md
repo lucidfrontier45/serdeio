@@ -70,7 +70,7 @@ SerdeIO provides 8 main functions for reading and writing data:
 - `read_record_from_file<T>(path)` - Read a single record, auto-detecting format from file extension
 - `read_records_from_file<T>(path)` - Read multiple records, auto-detecting format from file extension
 - `write_record_to_file<T>(path, record)` - Write a single record, auto-detecting format from file extension
-- `write_records_to_file<T>(path, records)` - Write multiple records, auto-detecting format from file extension
+- `write_records_to_file<T, I: IntoIterator<Item=&T>>(path, records)` - Write multiple records, accepts any iterator or collection (slices, Vec, iterators)
 
 Note: Some formats like CSV and JSON Lines only support multiple records (`Vec<T>`).
 
@@ -98,12 +98,12 @@ pub fn main() -> AnyResult<()> {
     let input_file_path = &args[1];
 
     // Read JSON file to memory (format auto-detected from .json extension)
-    let users: Vec<User> = read_record_from_file(input_file_path)
+    let users: Vec<User> = read_records_from_file(input_file_path)
         .context("Failed to read records from file")?;
 
     // Write to stdout in JSON Lines format
     let writer = std::io::stdout();
-    write_records_to_writer(writer, DataFormat::JsonLines, &users)?;
+    write_records_to_writer(writer, DataFormat::JsonLines, users.iter())?;
 
     Ok(())
 }
