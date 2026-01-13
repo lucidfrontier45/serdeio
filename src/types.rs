@@ -71,10 +71,11 @@ impl Display for DataFormat {
 
 #[cfg(test)]
 mod test {
+    use std::convert::TryFrom;
+
+    use super::DataFormat;
     #[test]
     fn test_data_format() {
-        use super::DataFormat;
-        use std::convert::TryFrom;
         assert_eq!(DataFormat::try_from("json").unwrap(), DataFormat::Json);
         assert_eq!(
             DataFormat::try_from("jsonl").unwrap(),
