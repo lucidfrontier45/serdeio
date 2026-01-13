@@ -16,4 +16,10 @@ pub enum Error {
     #[cfg(feature = "yaml")]
     #[error("YAML error: {0}")]
     Yaml(#[from] serde_yaml::Error),
+    #[cfg(feature = "messagepack")]
+    #[error("MessagePack decode error: {0}")]
+    MessagePack(#[from] rmp_serde::decode::Error),
+    #[cfg(feature = "messagepack")]
+    #[error("MessagePack encode error: {0}")]
+    MessagePackEncode(#[from] rmp_serde::encode::Error),
 }

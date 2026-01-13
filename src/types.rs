@@ -10,6 +10,8 @@ pub enum DataFormat {
     Csv,
     #[cfg(feature = "yaml")]
     Yaml,
+    #[cfg(feature = "messagepack")]
+    MessagePack,
 }
 
 #[derive(Error, Debug)]
@@ -33,6 +35,8 @@ impl TryFrom<&str> for DataFormat {
             "csv" => Ok(DataFormat::Csv),
             #[cfg(feature = "yaml")]
             "yaml" | "yml" => Ok(DataFormat::Yaml),
+            #[cfg(feature = "messagepack")]
+            "msgpack" | "mpack" | "mpk" => Ok(DataFormat::MessagePack),
             _ => Err(DataFormatError::Unknown(value.to_string())),
         }
     }
@@ -59,16 +63,19 @@ impl Display for DataFormat {
             DataFormat::Csv => write!(f, "csv"),
             #[cfg(feature = "yaml")]
             DataFormat::Yaml => write!(f, "yaml"),
+            #[cfg(feature = "messagepack")]
+            DataFormat::MessagePack => write!(f, "messagepack"),
         }
     }
 }
 
 #[cfg(test)]
 mod test {
+    use std::convert::TryFrom;
+
+    use super::DataFormat;
     #[test]
     fn test_data_format() {
-        use super::DataFormat;
-        use std::convert::TryFrom;
         assert_eq!(DataFormat::try_from("json").unwrap(), DataFormat::Json);
         assert_eq!(
             DataFormat::try_from("jsonl").unwrap(),
@@ -79,5 +86,24 @@ mod test {
             DataFormat::try_from("JSONL").unwrap(),
             DataFormat::JsonLines
         );
+        #[cfg(feature = "csv")]
+        assert_eq!(DataFormat::try_from("csv").unwrap(), DataFormat::Csv);
+        #[cfg(feature = "yaml")]
+        assert_eq!(DataFormat::try_from("yaml").unwrap(), DataFormat::Yaml);
+        #[cfg(feature = "messagepack")]
+        {
+            assert_eq!(
+                DataFormat::try_from("msgpack").unwrap(),
+                DataFormat::MessagePack
+            );
+            assert_eq!(
+                DataFormat::try_from("mpack").unwrap(),
+                DataFormat::MessagePack
+            );
+            assert_eq!(
+                DataFormat::try_from("mpk").unwrap(),
+                DataFormat::MessagePack
+            );
+        }
     }
 }
