@@ -1,18 +1,21 @@
-use std::io::{Read, Write};
+use std::io::{BufReader, BufWriter, Read, Write};
 
 use serde::{Serialize, de::DeserializeOwned};
 
 use crate::Error;
 
-pub fn read<T: DeserializeOwned>(mut reader: impl Read) -> Result<T, Error> {
+pub fn read<T: DeserializeOwned>(reader: impl Read) -> Result<T, Error> {
+    let mut reader = BufReader::new(reader);
     let mut content = String::new();
     reader.read_to_string(&mut content)?;
     Ok(toml::from_str(&content)?)
 }
 
-pub fn write<T: Serialize>(mut writer: impl Write, record: &T) -> Result<(), Error> {
+pub fn write<T: Serialize>(writer: impl Write, record: &T) -> Result<(), Error> {
+    let mut writer = BufWriter::new(writer);
     let content = toml::to_string(record)?;
     writer.write_all(content.as_bytes())?;
+    writer.flush()?;
     Ok(())
 }
 

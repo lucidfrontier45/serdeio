@@ -1,11 +1,11 @@
-use std::io::{Read, Write};
+use std::io::{BufReader, BufWriter, Read, Write};
 
 use serde::{Serialize, de::DeserializeOwned};
 
 use crate::Error;
 
 pub fn read<T: DeserializeOwned>(reader: impl Read) -> Result<Vec<T>, Error> {
-    let mut rdr = csv::Reader::from_reader(reader);
+    let mut rdr = csv::Reader::from_reader(BufReader::new(reader));
     let mut records: Vec<T> = Vec::new();
     for result in rdr.deserialize() {
         let record: T = result?;
@@ -18,7 +18,7 @@ pub fn write<'a, T: Serialize + 'a>(
     writer: impl Write,
     records: impl IntoIterator<Item = &'a T>,
 ) -> Result<(), Error> {
-    let mut wtr = csv::Writer::from_writer(writer);
+    let mut wtr = csv::Writer::from_writer(BufWriter::new(writer));
     for record in records {
         wtr.serialize(record)?;
     }
