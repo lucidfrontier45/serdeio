@@ -85,5 +85,24 @@ mod test {
             DataFormat::try_from("JSONL").unwrap(),
             DataFormat::JsonLines
         );
+        #[cfg(feature = "csv")]
+        assert_eq!(DataFormat::try_from("csv").unwrap(), DataFormat::Csv);
+        #[cfg(feature = "yaml")]
+        assert_eq!(DataFormat::try_from("yaml").unwrap(), DataFormat::Yaml);
+        #[cfg(feature = "messagepack")]
+        {
+            assert_eq!(
+                DataFormat::try_from("msgpack").unwrap(),
+                DataFormat::MessagePack
+            );
+            assert_eq!(
+                DataFormat::try_from("mpack").unwrap(),
+                DataFormat::MessagePack
+            );
+            assert_eq!(
+                DataFormat::try_from("mpk").unwrap(),
+                DataFormat::MessagePack
+            );
+        }
     }
 }
