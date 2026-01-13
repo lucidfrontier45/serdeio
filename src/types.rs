@@ -2,6 +2,28 @@ use std::{fmt::Display, path::Path};
 
 use thiserror::Error;
 
+/// Supported data formats for serialization and deserialization.
+///
+/// This enum represents the various data formats that SerdeIO can handle.
+/// Some formats are feature-gated and require enabling specific features in Cargo.toml.
+///
+/// # Supported Formats
+///
+/// - `Json`: JSON format (always available)
+/// - `JsonLines`: JSON Lines format (always available)
+/// - `Csv`: CSV format (requires `csv` feature)
+/// - `Yaml`: YAML format (requires `yaml` feature)
+/// - `MessagePack`: MessagePack format (requires `messagepack` feature)
+/// - `Toml`: TOML format (requires `toml` feature)
+///
+/// # Examples
+///
+/// ```rust
+/// use serdeio::DataFormat;
+///
+/// let format = DataFormat::Json;
+/// assert_eq!(format.to_string(), "json");
+/// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum DataFormat {
     Json,

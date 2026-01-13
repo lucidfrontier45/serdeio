@@ -83,19 +83,18 @@ This example reads a JSON file containing multiple user records and converts it 
 ```rust
 use anyhow::{Context, Result as AnyResult};
 use serde::{Deserialize, Serialize};
-use serdeio::{read_record_from_file, write_records_to_writer, DataFormat};
+use serdeio::{read_records_from_file, write_records_to_writer, DataFormat};
 
 #[derive(Debug, Deserialize, Serialize)]
 struct User {
     id: u32,
     name: String,
+    age: u8,
     items: Vec<String>,
 }
 
 pub fn main() -> AnyResult<()> {
-    // Get input file path from command line arguments
-    let args: Vec<String> = std::env::args().collect();
-    let input_file_path = &args[1];
+    let input_file_path = "examples/users.json";
 
     // Read JSON file to memory (format auto-detected from .json extension)
     let users: Vec<User> = read_records_from_file(input_file_path)
@@ -127,4 +126,4 @@ Contributions are welcome! Please:
 
 # License
 
-SerdeIO is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+SerdeIO is licensed under the MIT License.
