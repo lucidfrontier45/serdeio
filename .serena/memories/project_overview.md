@@ -1,7 +1,7 @@
 # SerdeIO Project Overview
 
 ## Project Purpose
-SerdeIO is a tiny IO utility library for Rust that provides serialization/deserialization of Serde-compatible structs across multiple data formats (JSON, JSON Lines, CSV, YAML, MessagePack). It's a minimal, focused library that makes it easy to read and write structured data in various formats.
+SerdeIO is a tiny IO utility library for Rust that provides serialization/deserialization of Serde-compatible structs across multiple data formats (JSON, JSON Lines, CSV, YAML, MessagePack, TOML). It's a minimal, focused library that makes it easy to read and write structured data in various formats.
 
 ## Tech Stack
 - **Language**: Rust (edition 2024)
@@ -13,7 +13,8 @@ SerdeIO is a tiny IO utility library for Rust that provides serialization/deseri
   - serde_yaml (for YAML support)
   - csv (for CSV support)
   - rmp-serde (for MessagePack support)
-- **Features**: csv, yaml, messagepack (optional)
+  - toml (for TOML support)
+- **Features**: csv, yaml, messagepack, toml (optional)
 - **Target**: Library crate (no binary)
 
 ## Key Features
@@ -22,6 +23,7 @@ SerdeIO is a tiny IO utility library for Rust that provides serialization/deseri
 - CSV support (optional feature)
 - YAML support (optional feature)
 - MessagePack support (optional feature)
+- TOML support (optional feature)
 - Automatic format detection from file extensions
 - Consistent API across all formats
 - Type-safe serialization/deserialization using Serde
@@ -36,7 +38,7 @@ SerdeIO is a tiny IO utility library for Rust that provides serialization/deseri
 - Automatic format detection from file paths
 
 ## Code Structure
-- Modular design with separate backend modules for each format (json, jsonlines, csv, yaml, messagepack)
+- Modular design with separate backend modules for each format (json, jsonlines, csv, yaml, messagepack, toml)
 - Consistent read/write API across all formats
 - Feature-gated optional backends
 - Comprehensive error handling with thiserror

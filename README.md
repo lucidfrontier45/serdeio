@@ -4,7 +4,7 @@
 [![Documentation](https://docs.rs/serdeio/badge.svg)](https://docs.rs/serdeio)
 [![License](https://img.shields.io/crates/l/serdeio)](https://github.com/lucidfrontier45/serdeio/blob/main/LICENSE)
 
-A lightweight Rust library for seamless serialization/deserialization of Serde-compatible structs across JSON, JSON Lines, CSV, YAML, and MessagePack formats.
+A lightweight Rust library for seamless serialization/deserialization of Serde-compatible structs across JSON, JSON Lines, CSV, YAML, MessagePack, and TOML formats.
 
 # Install
 
@@ -24,6 +24,9 @@ cargo add serdeio --features yaml
 # For MessagePack support
 cargo add serdeio --features messagepack
 
+# For TOML support
+cargo add serdeio --features toml
+
 # For both CSV and YAML
 cargo add serdeio --features csv,yaml
 ```
@@ -37,6 +40,7 @@ cargo add serdeio --features csv,yaml
 | CSV         | `.csv`                       | ✗             | ✓                | `csv`         |
 | YAML        | `.yaml`, `.yml`              | ✓             | ✓                | `yaml`        |
 | MessagePack | `.msgpack`, `.mpack`, `.mpk` | ✓             | ✓                | `messagepack` |
+| TOML        | `.toml`                      | ✓             | ✗                | `toml`        |
 
 # Features
 

@@ -22,4 +22,10 @@ pub enum Error {
     #[cfg(feature = "messagepack")]
     #[error("MessagePack encode error: {0}")]
     MessagePackEncode(#[from] rmp_serde::encode::Error),
+    #[cfg(feature = "toml")]
+    #[error("TOML deserialization error: {0}")]
+    Toml(#[from] toml::de::Error),
+    #[cfg(feature = "toml")]
+    #[error("TOML serialization error: {0}")]
+    TomlSerialize(#[from] toml::ser::Error),
 }

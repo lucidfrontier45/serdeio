@@ -12,6 +12,8 @@ pub enum DataFormat {
     Yaml,
     #[cfg(feature = "messagepack")]
     MessagePack,
+    #[cfg(feature = "toml")]
+    Toml,
 }
 
 #[derive(Error, Debug)]
@@ -37,6 +39,8 @@ impl TryFrom<&str> for DataFormat {
             "yaml" | "yml" => Ok(DataFormat::Yaml),
             #[cfg(feature = "messagepack")]
             "msgpack" | "mpack" | "mpk" => Ok(DataFormat::MessagePack),
+            #[cfg(feature = "toml")]
+            "toml" => Ok(DataFormat::Toml),
             _ => Err(DataFormatError::Unknown(value.to_string())),
         }
     }
@@ -65,6 +69,8 @@ impl Display for DataFormat {
             DataFormat::Yaml => write!(f, "yaml"),
             #[cfg(feature = "messagepack")]
             DataFormat::MessagePack => write!(f, "messagepack"),
+            #[cfg(feature = "toml")]
+            DataFormat::Toml => write!(f, "toml"),
         }
     }
 }

@@ -18,6 +18,8 @@ pub fn read_record_from_reader<T: DeserializeOwned>(
         DataFormat::Yaml => backend::yaml::read(reader),
         #[cfg(feature = "messagepack")]
         DataFormat::MessagePack => backend::messagepack::read(reader),
+        #[cfg(feature = "toml")]
+        DataFormat::Toml => backend::toml::read(reader),
         _ => Err(Error::UnsupportedFormat(data_format)),
     }
 }
@@ -35,6 +37,8 @@ pub fn read_records_from_reader<T: DeserializeOwned>(
         DataFormat::Yaml => backend::yaml::read(reader),
         #[cfg(feature = "messagepack")]
         DataFormat::MessagePack => backend::messagepack::read(reader),
+        #[allow(unreachable_patterns)]
+        _ => Err(Error::UnsupportedFormat(data_format)),
     }
 }
 

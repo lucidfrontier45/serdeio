@@ -39,6 +39,7 @@ cargo test
 cargo test --all-features
 cargo test --features csv
 cargo test --features yaml
+cargo test --features toml
 ```
 - Test with different feature combinations
 - Verify feature-gated code works correctly
