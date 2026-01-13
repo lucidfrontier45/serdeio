@@ -9,3 +9,6 @@ pub mod yaml;
 
 #[cfg(feature = "messagepack")]
 pub mod messagepack;
+
+#[cfg(feature = "toml")]
+pub mod toml;

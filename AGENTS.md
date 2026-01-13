@@ -4,7 +4,7 @@ This guide helps agentic coding agents work effectively with the SerdeIO Rust li
 
 ## Project Overview
 
-SerdeIO is a tiny IO utility library for Rust that provides serialization/deserialization of Serde-compatible structs across multiple data formats (JSON, JSON Lines, CSV, YAML, MessagePack).
+SerdeIO is a tiny IO utility library for Rust that provides serialization/deserialization of Serde-compatible structs across multiple data formats (JSON, JSON Lines, CSV, YAML, MessagePack, TOML).
 
 ## Build/Test Commands
 
@@ -66,7 +66,7 @@ use crate::{backend, types::DataFormat, Error};
 
 ### Error Handling
 - Use dedicated `Error` enum with `thiserror` for structured error types
-- Error variants include `DataFormat`, `UnsupportedFormat`, `Io`, `Json`, `Csv`, `Yaml`
+- Error variants include `DataFormat`, `UnsupportedFormat`, `Io`, `Json`, `Csv`, `Yaml`, `Toml`
 - Use `?` operator for error propagation through `#[from]` derives
 - Specific error messages defined in error variants
 
@@ -96,7 +96,7 @@ use crate::{backend, types::DataFormat, Error};
 - Prefer `to_owned()` or `to_string()` over `clone()` for string conversions
 
 ### Feature Flags
-- Optional backends are feature-gated: `#[cfg(feature = "csv")]`, `#[cfg(feature = "yaml")]`, `#[cfg(feature = "messagepack")]`
+- Optional backends are feature-gated: `#[cfg(feature = "csv")]`, `#[cfg(feature = "yaml")]`, `#[cfg(feature = "messagepack")]`, `#[cfg(feature = "toml")]`
 - Always test both with and without features enabled
 - Conditional compilation for format-specific code paths
 
