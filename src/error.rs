@@ -18,13 +18,13 @@ pub enum Error {
     Yaml(#[from] serde_yaml::Error),
     #[cfg(feature = "messagepack")]
     #[error("MessagePack decode error: {0}")]
-    MessagePack(#[from] rmp_serde::decode::Error),
+    MessagePackDecode(#[from] rmp_serde::decode::Error),
     #[cfg(feature = "messagepack")]
     #[error("MessagePack encode error: {0}")]
     MessagePackEncode(#[from] rmp_serde::encode::Error),
     #[cfg(feature = "toml")]
     #[error("TOML deserialization error: {0}")]
-    Toml(#[from] toml::de::Error),
+    TomlDeserialize(#[from] toml::de::Error),
     #[cfg(feature = "toml")]
     #[error("TOML serialization error: {0}")]
     TomlSerialize(#[from] toml::ser::Error),
