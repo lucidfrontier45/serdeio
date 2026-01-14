@@ -48,6 +48,7 @@ pub fn read_record_from_reader<T: DeserializeOwned>(
     data_format: DataFormat,
 ) -> Result<T, Error> {
     match data_format {
+        DataFormat::Auto => Err(Error::AutoNotSupported),
         DataFormat::Json => backend::json::read(reader),
         #[cfg(feature = "yaml")]
         DataFormat::Yaml => backend::yaml::read(reader),
@@ -100,6 +101,7 @@ pub fn read_records_from_reader<T: DeserializeOwned>(
     data_format: DataFormat,
 ) -> Result<Vec<T>, Error> {
     match data_format {
+        DataFormat::Auto => Err(Error::AutoNotSupported),
         DataFormat::Json => backend::json::read(reader),
         DataFormat::JsonLines => backend::jsonlines::read(reader),
         #[cfg(feature = "csv")]
@@ -111,13 +113,6 @@ pub fn read_records_from_reader<T: DeserializeOwned>(
         #[allow(unreachable_patterns)]
         _ => Err(Error::UnsupportedFormat(data_format)),
     }
-}
-
-fn open_file(path: impl AsRef<Path>) -> Result<(DataFormat, BufReader<File>), Error> {
-    let data_format = DataFormat::try_from(path.as_ref())?;
-    let file = File::open(path)?;
-    let rdr = BufReader::new(file);
-    Ok((data_format, rdr))
 }
 
 /// Reads a single record from a file and deserializes it into the specified type.
@@ -140,7 +135,7 @@ fn open_file(path: impl AsRef<Path>) -> Result<(DataFormat, BufReader<File>), Er
 ///
 /// ```rust,no_run
 /// use serde::{Deserialize, Serialize};
-/// use serdeio::read_record_from_file;
+/// use serdeio::{read_record_from_file, DataFormat};
 ///
 /// #[derive(Deserialize)]
 /// struct User {
@@ -148,11 +143,21 @@ fn open_file(path: impl AsRef<Path>) -> Result<(DataFormat, BufReader<File>), Er
 ///     age: u32,
 /// }
 ///
-/// let user: User = read_record_from_file("user.json").unwrap();
+/// let user: User = read_record_from_file("user.json", DataFormat::Auto).unwrap();
 /// ```
-pub fn read_record_from_file<T: DeserializeOwned>(path: impl AsRef<Path>) -> Result<T, Error> {
-    let (data_format, rdr) = open_file(path)?;
-    read_record_from_reader(rdr, data_format)
+pub fn read_record_from_file<T: DeserializeOwned>(
+    path: impl AsRef<Path>,
+    data_format: DataFormat,
+) -> Result<T, Error> {
+    let path = path.as_ref();
+    let final_format = if data_format == DataFormat::Auto {
+        DataFormat::try_from(path)?
+    } else {
+        data_format
+    };
+    let file = File::open(path)?;
+    let rdr = BufReader::new(file);
+    read_record_from_reader(rdr, final_format)
 }
 
 /// Reads multiple records from a file and deserializes them into a vector of the specified type.
@@ -176,7 +181,7 @@ pub fn read_record_from_file<T: DeserializeOwned>(path: impl AsRef<Path>) -> Res
 ///
 /// ```rust,no_run
 /// use serde::{Deserialize, Serialize};
-/// use serdeio::read_records_from_file;
+/// use serdeio::{read_records_from_file, DataFormat};
 ///
 /// #[derive(Deserialize)]
 /// struct User {
@@ -184,11 +189,49 @@ pub fn read_record_from_file<T: DeserializeOwned>(path: impl AsRef<Path>) -> Res
 ///     age: u32,
 /// }
 ///
-/// let users: Vec<User> = read_records_from_file("users.json").unwrap();
+/// let users: Vec<User> = read_records_from_file("users.json", DataFormat::Auto).unwrap();
 /// ```
 pub fn read_records_from_file<T: DeserializeOwned>(
     path: impl AsRef<Path>,
+    data_format: DataFormat,
 ) -> Result<Vec<T>, Error> {
-    let (data_format, rdr) = open_file(path)?;
-    read_records_from_reader(rdr, data_format)
+    let path = path.as_ref();
+    let final_format = if data_format == DataFormat::Auto {
+        DataFormat::try_from(path)?
+    } else {
+        data_format
+    };
+    let file = File::open(path)?;
+    let rdr = BufReader::new(file);
+    read_records_from_reader(rdr, final_format)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde::Deserialize;
+    use std::io::Cursor;
+
+    #[derive(Deserialize)]
+    struct TestRecord {
+        name: String,
+        value: i32,
+    }
+
+    #[test]
+    fn test_read_record_from_reader_auto_not_supported() {
+        let json_data = r#"{"name": "test", "value": 42}"#;
+        let reader = Cursor::new(json_data);
+        let result: Result<TestRecord, Error> = read_record_from_reader(reader, DataFormat::Auto);
+        assert!(matches!(result, Err(Error::AutoNotSupported)));
+    }
+
+    #[test]
+    fn test_read_records_from_reader_auto_not_supported() {
+        let json_data = r#"[{"name": "test1", "value": 1}, {"name": "test2", "value": 2}]"#;
+        let reader = Cursor::new(json_data);
+        let result: Result<Vec<TestRecord>, Error> =
+            read_records_from_reader(reader, DataFormat::Auto);
+        assert!(matches!(result, Err(Error::AutoNotSupported)));
+    }
 }

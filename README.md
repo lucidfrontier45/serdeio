@@ -61,18 +61,18 @@ cargo add serdeio --features csv,yaml
 SerdeIO provides 8 main functions for reading and writing data:
 
 **Reader-based functions:**
-- `read_record_from_reader<T>(reader, format)` - Read a single record from any `Read` implementation
-- `read_records_from_reader<T>(reader, format)` - Read multiple records as `Vec<T>` from any `Read`
-- `write_record_to_writer<T>(writer, format, record)` - Write a single record to any `Write`
-- `write_records_to_writer<T>(writer, format, records)` - Write multiple records using an iterator
+- `read_record_from_reader<T>(reader, data_format)` - Read a single record from any `Read` implementation
+- `read_records_from_reader<T>(reader, data_format)` - Read multiple records as `Vec<T>` from any `Read`
+- `write_record_to_writer<T>(writer, record, data_format)` - Write a single record to any `Write`
+- `write_records_to_writer<T>(writer, records, data_format)` - Write multiple records using an iterator
 
 **File-based functions:**
-- `read_record_from_file<T>(path)` - Read a single record, auto-detecting format from file extension
-- `read_records_from_file<T>(path)` - Read multiple records, auto-detecting format from file extension
-- `write_record_to_file<T>(path, record)` - Write a single record, auto-detecting format from file extension
-- `write_records_to_file<T, I: IntoIterator<Item=&T>>(path, records)` - Write multiple records, accepts any iterator or collection (slices, Vec, iterators)
+- `read_record_from_file<T>(path, data_format?)` - Read a single record, auto-detecting format from file extension
+- `read_records_from_file<T>(path, data_format?)` - Read multiple records, auto-detecting format from file extension
+- `write_record_to_file<T>(path, record, data_format?)` - Write a single record, auto-detecting format from file extension
+- `write_records_to_file<T>(path, records, data_format?)` - Write multiple records, accepts any iterator or collection
 
-Note: Some formats like CSV and JSON Lines only support multiple records (`Vec<T>`).
+Note: Some formats like CSV and JSON Lines only support multiple records (`Vec<T>`). File-based functions accept an optional `DataFormat` override; if not provided or set to `Auto`, the format is inferred from the file extension.
 
 # Examples
 
@@ -97,12 +97,12 @@ pub fn main() -> AnyResult<()> {
     let input_file_path = "examples/users.json";
 
     // Read JSON file to memory (format auto-detected from .json extension)
-    let users: Vec<User> = read_records_from_file(input_file_path)
+    let users: Vec<User> = read_records_from_file(input_file_path, DataFormat::Auto)
         .context("Failed to read records from file")?;
 
     // Write to stdout in JSON Lines format
     let writer = std::io::stdout();
-    write_records_to_writer(writer, DataFormat::JsonLines, users.iter())?;
+    write_records_to_writer(writer, users.iter(), DataFormat::JsonLines)?;
 
     Ok(())
 }

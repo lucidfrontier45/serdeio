@@ -26,6 +26,7 @@ use thiserror::Error;
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum DataFormat {
+    Auto,
     Json,
     JsonLines,
     #[cfg(feature = "csv")]
@@ -83,6 +84,7 @@ impl TryFrom<&Path> for DataFormat {
 impl Display for DataFormat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            DataFormat::Auto => write!(f, "auto"),
             DataFormat::Json => write!(f, "json"),
             DataFormat::JsonLines => write!(f, "jsonl"),
             #[cfg(feature = "csv")]
