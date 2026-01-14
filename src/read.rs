@@ -208,10 +208,13 @@ pub fn read_records_from_file<T: DeserializeOwned>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use serde::Deserialize;
     use std::io::Cursor;
 
+    use serde::Deserialize;
+
+    use super::*;
+
+    #[allow(dead_code)]
     #[derive(Deserialize)]
     struct TestRecord {
         name: String,
