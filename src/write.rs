@@ -36,7 +36,7 @@ use crate::{Error, backend, types::DataFormat};
 ///
 /// let user = User { name: "Alice".to_string(), age: 30 };
 /// let mut buffer = Vec::new();
-/// write_record_to_writer(&mut buffer, DataFormat::Json, &user).unwrap();
+/// write_record_to_writer(&mut buffer, &user, DataFormat::Json).unwrap();
 /// let json = String::from_utf8(buffer).unwrap();
 /// assert!(json.contains("Alice"));
 /// ```
@@ -94,7 +94,7 @@ pub fn write_record_to_writer<T: Serialize>(
 ///     User { name: "Bob".to_string(), age: 25 },
 /// ];
 /// let mut buffer = Vec::new();
-/// write_records_to_writer(&mut buffer, DataFormat::Json, &users).unwrap();
+/// write_records_to_writer(&mut buffer, &users, DataFormat::Json).unwrap();
 /// let json = String::from_utf8(buffer).unwrap();
 /// assert!(json.contains("Alice") && json.contains("Bob"));
 /// ```
@@ -140,7 +140,7 @@ pub fn write_records_to_writer<'a, T: Serialize + 'a>(
 ///
 /// ```rust,no_run
 /// use serde::{Deserialize, Serialize};
-/// use serdeio::write_record_to_file;
+/// use serdeio::{write_record_to_file, DataFormat};
 ///
 /// #[derive(Serialize)]
 /// struct User {
@@ -149,7 +149,7 @@ pub fn write_records_to_writer<'a, T: Serialize + 'a>(
 /// }
 ///
 /// let user = User { name: "Alice".to_string(), age: 30 };
-/// write_record_to_file("user.json", &user).unwrap();
+/// write_record_to_file("user.json", &user, DataFormat::Auto).unwrap();
 /// ```
 pub fn write_record_to_file<T: Serialize>(
     path: impl AsRef<Path>,
@@ -185,7 +185,7 @@ pub fn write_record_to_file<T: Serialize>(
 ///
 /// ```rust,no_run
 /// use serde::{Deserialize, Serialize};
-/// use serdeio::write_records_to_file;
+/// use serdeio::{write_records_to_file, DataFormat};
 ///
 /// #[derive(Serialize)]
 /// struct User {
@@ -197,7 +197,7 @@ pub fn write_record_to_file<T: Serialize>(
 ///     User { name: "Alice".to_string(), age: 30 },
 ///     User { name: "Bob".to_string(), age: 25 },
 /// ];
-/// write_records_to_file("users.json", &users).unwrap();
+/// write_records_to_file("users.json", &users, DataFormat::Auto).unwrap();
 /// ```
 pub fn write_records_to_file<'a, T: Serialize + 'a, I: IntoIterator<Item = &'a T>>(
     path: impl AsRef<Path>,

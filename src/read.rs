@@ -142,7 +142,7 @@ fn open_file(path: impl AsRef<Path>) -> Result<(DataFormat, BufReader<File>), Er
 ///
 /// ```rust,no_run
 /// use serde::{Deserialize, Serialize};
-/// use serdeio::read_record_from_file;
+/// use serdeio::{read_record_from_file, DataFormat};
 ///
 /// #[derive(Deserialize)]
 /// struct User {
@@ -150,7 +150,7 @@ fn open_file(path: impl AsRef<Path>) -> Result<(DataFormat, BufReader<File>), Er
 ///     age: u32,
 /// }
 ///
-/// let user: User = read_record_from_file("user.json").unwrap();
+/// let user: User = read_record_from_file("user.json", DataFormat::Auto).unwrap();
 /// ```
 pub fn read_record_from_file<T: DeserializeOwned>(
     path: impl AsRef<Path>,
@@ -184,7 +184,7 @@ pub fn read_record_from_file<T: DeserializeOwned>(
 ///
 /// ```rust,no_run
 /// use serde::{Deserialize, Serialize};
-/// use serdeio::read_records_from_file;
+/// use serdeio::{read_records_from_file, DataFormat};
 ///
 /// #[derive(Deserialize)]
 /// struct User {
@@ -192,7 +192,7 @@ pub fn read_record_from_file<T: DeserializeOwned>(
 ///     age: u32,
 /// }
 ///
-/// let users: Vec<User> = read_records_from_file("users.json").unwrap();
+/// let users: Vec<User> = read_records_from_file("users.json", DataFormat::Auto).unwrap();
 /// ```
 pub fn read_records_from_file<T: DeserializeOwned>(
     path: impl AsRef<Path>,
