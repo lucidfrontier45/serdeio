@@ -1,45 +1,55 @@
 # SerdeIO Project Overview
 
-## Project Purpose
-SerdeIO is a tiny IO utility library for Rust that provides serialization/deserialization of Serde-compatible structs across multiple data formats (JSON, JSON Lines, CSV, YAML, MessagePack, TOML). It's a minimal, focused library that makes it easy to read and write structured data in various formats.
-
-## Tech Stack
-- **Language**: Rust (edition 2024)
-- **Core Dependencies**: 
-  - serde (with derive feature)
-  - serde_json
-  - thiserror (for error handling)
-- **Optional Dependencies** (feature-gated):
-  - serde_yaml (for YAML support)
-  - csv (for CSV support)
-  - rmp-serde (for MessagePack support)
-  - toml (for TOML support)
-- **Features**: csv, yaml, messagepack, toml (optional)
-- **Target**: Library crate (no binary)
+## Purpose
+SerdeIO is a lightweight Rust library for seamless serialization/deserialization of Serde-compatible structs across multiple formats with automatic format detection from file extensions.
 
 ## Key Features
-- JSON support (built-in)
-- JSON Lines support (built-in)
-- CSV support (optional feature)
-- YAML support (optional feature)
-- MessagePack support (optional feature)
-- TOML support (optional feature)
-- Automatic format detection from file extensions
-- Consistent API across all formats
-- Type-safe serialization/deserialization using Serde
-- Lightweight with minimal dependencies
+- Auto-detection of file format from extensions (case-insensitive)
 - Iterator support for efficient streaming writes
+- Uses `BufReader`/`BufWriter` for optimal I/O performance
+- Minimal dependencies with feature-gated optional formats
 
-## Public API Design
-- `read_record_from_*` functions for single records
-- `read_records_from_*` functions for multiple records (Vec<T>)
-- `write_*` functions with corresponding write operations
-- `DataFormat` enum for explicit format specification
-- Automatic format detection from file paths
+## Supported Formats
+| Format      | Extensions              | Single Record | Multiple Records | Feature Flag |
+|-------------|------------------------|---------------|------------------|--------------|
+| JSON        | .json                  | ✓             | ✓                | (default)    |
+| JSON Lines  | .jsonl, .jsl           | ✗             | ✓                | (default)    |
+| CSV         | .csv                   | ✗             | ✓                | `csv`        |
+| YAML        | .yaml, .yml            | ✓             | ✓                | `yaml`       |
+| MessagePack | .msgpack, .mpack, .mpk | ✓             | ✓                | `messagepack`|
+| TOML        | .toml                  | ✓             | ✗                | `toml`       |
 
-## Code Structure
-- Modular design with separate backend modules for each format (json, jsonlines, csv, yaml, messagepack, toml)
-- Consistent read/write API across all formats
-- Feature-gated optional backends
-- Comprehensive error handling with thiserror
-- Extensive unit tests using in-memory Cursor testing
+## Main API Functions
+
+**Reader-based:**
+- `read_record_from_reader<T>(reader, format)` - Read single record from any `Read`
+- `read_records_from_reader<T>(reader, format)` - Read multiple records as `Vec<T>`
+- `write_record_to_writer<T>(writer, format, record)` - Write single record
+- `write_records_to_writer<T>(writer, format, records)` - Write multiple records via iterator
+
+**File-based (auto-detect format from extension):**
+- `read_record_from_file<T>(path)` - Read single record
+- `read_records_from_file<T>(path)` - Read multiple records
+- `write_record_to_file<T>(path, record)` - Write single record
+- `write_records_to_file<T, I: IntoIterator<Item=&T>>(path, records)` - Write multiple records
+
+## Project Structure
+```
+serdeio/
+├── src/
+│   ├── lib.rs              # Main entry point
+│   ├── read.rs             # read functions
+│   ├── write.rs            # write functions
+│   ├── types.rs            # DataFormat enum
+│   ├── error.rs            # Error types
+│   └── backend/            # Format implementations
+│       ├── json.rs
+│       ├── jsonlines.rs
+│       ├── csv.rs
+│       ├── yaml.rs
+│       ├── messagepack.rs
+│       └── toml.rs
+├── examples/
+├── Cargo.toml
+└── README.md
+```

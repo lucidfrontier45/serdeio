@@ -1,90 +1,171 @@
-# Essential Development Commands
+# Suggested Commands for SerdeIO Development
 
-## Core Development Commands
+## Basic Commands
+See `AGENTS.md` for core commands:
+- Build: `cargo build`
+- Test: `cargo test`
+- Lint: `cargo clippy -- -D warnings`
+- Format: `cargo fmt`
+- Check: `cargo check`
+
+## Extended Build Options
+
+### Build with specific features
 ```bash
-# Build and check compilation
-cargo check
+cargo build --features csv,yaml
+cargo build --features csv,yaml,messagepack,toml
+cargo build --all-features
+```
 
-# Run all tests
-cargo test
+### Build release version
+```bash
+cargo build --release
+```
 
-# Run specific test
-cargo test <test_name> --lib
-# Examples:
-cargo test test_data_format --lib
-cargo test test_read --lib
+## Extended Testing Options
 
-# Format code according to rustfmt standards
-cargo fmt
+### Run tests with all features
+```bash
+cargo test --all-features
+```
 
-# Run linting and fix warnings (strict mode)
-cargo clippy -- -D warnings
+### Run with output
+```bash
+cargo test -- --nocapture
+```
 
-# Build examples
-cargo build --examples
+### Run specific test
+```bash
+cargo test test_name
+```
 
-# Run example with arguments
-cargo run --example json2jsonl -- <input_file>
+## Documentation
 
-# Build with all features (for comprehensive testing)
+### Generate docs
+```bash
+cargo doc --all-features
+```
+
+### View docs locally
+```bash
+# Open in browser
+start target/doc/serdeio/index.html
+```
+
+## Dependency Management
+
+### Add dependency
+```bash
+cargo add serde
+cargo add serde_yaml --features yaml
+```
+
+### Update dependencies
+```bash
+cargo update
+```
+
+### Show dependency tree
+```bash
+cargo tree
+```
+
+## Running Examples
+
+### Run specific example
+```bash
+cargo run --example json2jsonl
+cargo run --example json2jsonl --features csv,yaml
+```
+
+## Cleaning
+
+```bash
+cargo clean
+```
+
+## Windows Git Commands
+
+### Stage changes
+```bash
+git add .
+git add filename.rs
+```
+
+### Create commit
+```bash
+git commit -m "message"
+```
+
+### View history
+```bash
+git log --oneline
+git log -5 --oneline
+```
+
+### Check status
+```bash
+git status
+git diff
+git diff --staged
+```
+
+### Branch operations
+```bash
+git branch
+git checkout -b new-branch
+git checkout main
+```
+
+### Sync with remote
+```bash
+git pull
+git pull origin main
+git push
+git push -u origin new-branch
+```
+
+## Windows File Operations
+
+### List files
+```bash
+dir
+dir /s *.rs
+```
+
+### Find files containing text
+```bash
+findstr /s /c:"pattern" *.rs
+```
+
+### Create/remove directories
+```bash
+mkdir new_module
+rmdir /s /q old_module
+```
+
+## Project Verification Commands
+
+### Full verification (recommended before committing)
+```bash
+cargo check --all-features && cargo fmt && cargo clippy -- -D warnings && cargo test --all-features
+```
+
+### Check with all features
+```bash
 cargo check --all-features
 cargo test --all-features
 ```
 
-## Development Workflow Commands
+### Format check
 ```bash
-# Standard development sequence
-cargo check && cargo clippy -- -D warnings && cargo fmt && cargo test
-
-# Test with specific features
-cargo test --features csv
-cargo test --features yaml
-cargo test --all-features
-
-# Documentation build
-cargo doc --open
-
-# Check documentation coverage
-cargo doc --no-deps --document-private-items
+cargo fmt -- --check
 ```
 
-## Git Commands (Linux environment)
+## Rust Toolchain
+
 ```bash
-# Check git status
-git status
-
-# Stage changes
-git add <file>
-git add .
-
-# Commit changes
-git commit -m "descriptive commit message"
-
-# Pull latest changes
-git pull
-
-# Push changes
-git push
-
-# Check git log
-git log --oneline -10
-```
-
-## File System Commands (Linux)
-```bash
-# List files
-ls -la
-ls src/backend/
-
-# Find files by pattern
-find . -name "*.rs"
-find . -name "*.toml"
-
-# Search in files
-grep -r "pattern" src/
-rg "pattern" src/  # if ripgrep is available
-
-# Directory structure
-tree -I target
-find . -type d -name "*" | head -20
+rustc --version
+cargo --version
+rustup update
 ```
