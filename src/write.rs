@@ -154,14 +154,16 @@ pub fn write_records_to_writer<'a, T: Serialize + 'a>(
 pub fn write_record_to_file<T: Serialize>(
     path: impl AsRef<Path>,
     record: &T,
-    mut data_format: DataFormat,
+    data_format: DataFormat,
 ) -> Result<(), Error> {
-    let inferred_format = DataFormat::try_from(path.as_ref())?;
-    if data_format == DataFormat::Auto {
-        data_format = inferred_format;
-    }
+    let path = path.as_ref();
+    let final_format = if data_format == DataFormat::Auto {
+        DataFormat::try_from(path)?
+    } else {
+        data_format
+    };
     let file = File::create(path)?;
-    write_record_to_writer(file, record, data_format)
+    write_record_to_writer(file, record, final_format)
 }
 
 /// Writes multiple records to a file in the data format inferred from the file extension.
@@ -202,12 +204,54 @@ pub fn write_record_to_file<T: Serialize>(
 pub fn write_records_to_file<'a, T: Serialize + 'a, I: IntoIterator<Item = &'a T>>(
     path: impl AsRef<Path>,
     records: I,
-    mut data_format: DataFormat,
+    data_format: DataFormat,
 ) -> Result<(), Error> {
-    let inferred_format = DataFormat::try_from(path.as_ref())?;
-    if data_format == DataFormat::Auto {
-        data_format = inferred_format;
-    }
+    let path = path.as_ref();
+    let final_format = if data_format == DataFormat::Auto {
+        DataFormat::try_from(path)?
+    } else {
+        data_format
+    };
     let file = File::create(path)?;
-    write_records_to_writer(file, records, data_format)
+    write_records_to_writer(file, records, final_format)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde::Serialize;
+
+    #[derive(Serialize)]
+    struct TestRecord {
+        name: String,
+        value: i32,
+    }
+
+    #[test]
+    fn test_write_record_to_writer_auto_not_supported() {
+        let record = TestRecord {
+            name: "test".to_string(),
+            value: 42,
+        };
+        let mut buffer = Vec::new();
+        let result = write_record_to_writer(&mut buffer, &record, DataFormat::Auto);
+        assert!(matches!(result, Err(Error::AutoNotSupported)));
+    }
+
+    #[test]
+    fn test_write_records_to_writer_auto_not_supported() {
+        let records = vec![
+            TestRecord {
+                name: "test1".to_string(),
+                value: 1,
+            },
+            TestRecord {
+                name: "test2".to_string(),
+                value: 2,
+            },
+        ];
+        let mut buffer = Vec::new();
+        let result = write_records_to_writer(&mut buffer, &records, DataFormat::Auto);
+        assert!(matches!(result, Err(Error::AutoNotSupported)));
+    }
 }

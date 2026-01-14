@@ -115,13 +115,6 @@ pub fn read_records_from_reader<T: DeserializeOwned>(
     }
 }
 
-fn open_file(path: impl AsRef<Path>) -> Result<(DataFormat, BufReader<File>), Error> {
-    let data_format = DataFormat::try_from(path.as_ref())?;
-    let file = File::open(path)?;
-    let rdr = BufReader::new(file);
-    Ok((data_format, rdr))
-}
-
 /// Reads a single record from a file and deserializes it into the specified type.
 ///
 /// The data format is automatically inferred from the file extension.
@@ -154,13 +147,17 @@ fn open_file(path: impl AsRef<Path>) -> Result<(DataFormat, BufReader<File>), Er
 /// ```
 pub fn read_record_from_file<T: DeserializeOwned>(
     path: impl AsRef<Path>,
-    mut data_format: DataFormat,
+    data_format: DataFormat,
 ) -> Result<T, Error> {
-    let (inferred_format, rdr) = open_file(path)?;
-    if data_format == DataFormat::Auto {
-        data_format = inferred_format;
-    }
-    read_record_from_reader(rdr, data_format)
+    let path = path.as_ref();
+    let final_format = if data_format == DataFormat::Auto {
+        DataFormat::try_from(path)?
+    } else {
+        data_format
+    };
+    let file = File::open(path)?;
+    let rdr = BufReader::new(file);
+    read_record_from_reader(rdr, final_format)
 }
 
 /// Reads multiple records from a file and deserializes them into a vector of the specified type.
@@ -196,11 +193,45 @@ pub fn read_record_from_file<T: DeserializeOwned>(
 /// ```
 pub fn read_records_from_file<T: DeserializeOwned>(
     path: impl AsRef<Path>,
-    mut data_format: DataFormat,
+    data_format: DataFormat,
 ) -> Result<Vec<T>, Error> {
-    let (inferred_format, rdr) = open_file(path)?;
-    if data_format == DataFormat::Auto {
-        data_format = inferred_format;
+    let path = path.as_ref();
+    let final_format = if data_format == DataFormat::Auto {
+        DataFormat::try_from(path)?
+    } else {
+        data_format
+    };
+    let file = File::open(path)?;
+    let rdr = BufReader::new(file);
+    read_records_from_reader(rdr, final_format)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde::Deserialize;
+    use std::io::Cursor;
+
+    #[derive(Deserialize)]
+    struct TestRecord {
+        name: String,
+        value: i32,
     }
-    read_records_from_reader(rdr, data_format)
+
+    #[test]
+    fn test_read_record_from_reader_auto_not_supported() {
+        let json_data = r#"{"name": "test", "value": 42}"#;
+        let reader = Cursor::new(json_data);
+        let result: Result<TestRecord, Error> = read_record_from_reader(reader, DataFormat::Auto);
+        assert!(matches!(result, Err(Error::AutoNotSupported)));
+    }
+
+    #[test]
+    fn test_read_records_from_reader_auto_not_supported() {
+        let json_data = r#"[{"name": "test1", "value": 1}, {"name": "test2", "value": 2}]"#;
+        let reader = Cursor::new(json_data);
+        let result: Result<Vec<TestRecord>, Error> =
+            read_records_from_reader(reader, DataFormat::Auto);
+        assert!(matches!(result, Err(Error::AutoNotSupported)));
+    }
 }
