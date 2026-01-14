@@ -42,10 +42,11 @@ use crate::{Error, backend, types::DataFormat};
 /// ```
 pub fn write_record_to_writer<T: Serialize>(
     writer: impl Write,
-    data_format: DataFormat,
     record: &T,
+    data_format: DataFormat,
 ) -> Result<(), Error> {
     match data_format {
+        DataFormat::Auto => Err(Error::AutoNotSupported),
         DataFormat::Json => backend::json::write(writer, record),
         #[cfg(feature = "yaml")]
         DataFormat::Yaml => backend::yaml::write(writer, record),
@@ -99,10 +100,11 @@ pub fn write_record_to_writer<T: Serialize>(
 /// ```
 pub fn write_records_to_writer<'a, T: Serialize + 'a>(
     writer: impl Write,
-    data_format: DataFormat,
     records: impl IntoIterator<Item = &'a T>,
+    data_format: DataFormat,
 ) -> Result<(), Error> {
     match data_format {
+        DataFormat::Auto => Err(Error::AutoNotSupported),
         DataFormat::Json => backend::json::write(writer, &records.into_iter().collect::<Vec<_>>()),
         DataFormat::JsonLines => backend::jsonlines::write(writer, records),
         #[cfg(feature = "csv")]
@@ -149,10 +151,17 @@ pub fn write_records_to_writer<'a, T: Serialize + 'a>(
 /// let user = User { name: "Alice".to_string(), age: 30 };
 /// write_record_to_file("user.json", &user).unwrap();
 /// ```
-pub fn write_record_to_file<T: Serialize>(path: impl AsRef<Path>, record: &T) -> Result<(), Error> {
-    let data_format = DataFormat::try_from(path.as_ref())?;
+pub fn write_record_to_file<T: Serialize>(
+    path: impl AsRef<Path>,
+    record: &T,
+    mut data_format: DataFormat,
+) -> Result<(), Error> {
+    let inferred_format = DataFormat::try_from(path.as_ref())?;
+    if data_format == DataFormat::Auto {
+        data_format = inferred_format;
+    }
     let file = File::create(path)?;
-    write_record_to_writer(file, data_format, record)
+    write_record_to_writer(file, record, data_format)
 }
 
 /// Writes multiple records to a file in the data format inferred from the file extension.
@@ -193,8 +202,12 @@ pub fn write_record_to_file<T: Serialize>(path: impl AsRef<Path>, record: &T) ->
 pub fn write_records_to_file<'a, T: Serialize + 'a, I: IntoIterator<Item = &'a T>>(
     path: impl AsRef<Path>,
     records: I,
+    mut data_format: DataFormat,
 ) -> Result<(), Error> {
-    let data_format = DataFormat::try_from(path.as_ref())?;
+    let inferred_format = DataFormat::try_from(path.as_ref())?;
+    if data_format == DataFormat::Auto {
+        data_format = inferred_format;
+    }
     let file = File::create(path)?;
-    write_records_to_writer(file, data_format, records)
+    write_records_to_writer(file, records, data_format)
 }

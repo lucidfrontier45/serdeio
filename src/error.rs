@@ -2,6 +2,8 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum Error {
+    #[error("Auto data format is not supported for this operation")]
+    AutoNotSupported,
     #[error("Data format error: {0}")]
     DataFormat(#[from] crate::types::DataFormatError),
     #[error("Unsupported file format: {0}")]

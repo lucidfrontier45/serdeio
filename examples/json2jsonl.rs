@@ -15,12 +15,12 @@ pub fn main() -> AnyResult<()> {
     let input_file_path = &args[1];
 
     // read json to memory
-    let users: Vec<User> =
-        read_record_from_file(input_file_path).context("Failed to read records from file")?;
+    let users: Vec<User> = read_record_from_file(input_file_path, DataFormat::Auto)
+        .context("Failed to read records from file")?;
 
     // write to stdout in json lines format
     let writer = std::io::stdout();
-    write_records_to_writer(writer, DataFormat::JsonLines, &users).unwrap();
+    write_records_to_writer(writer, &users, DataFormat::JsonLines).unwrap();
 
     Ok(())
 }

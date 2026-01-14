@@ -48,6 +48,7 @@ pub fn read_record_from_reader<T: DeserializeOwned>(
     data_format: DataFormat,
 ) -> Result<T, Error> {
     match data_format {
+        DataFormat::Auto => Err(Error::AutoNotSupported),
         DataFormat::Json => backend::json::read(reader),
         #[cfg(feature = "yaml")]
         DataFormat::Yaml => backend::yaml::read(reader),
@@ -100,6 +101,7 @@ pub fn read_records_from_reader<T: DeserializeOwned>(
     data_format: DataFormat,
 ) -> Result<Vec<T>, Error> {
     match data_format {
+        DataFormat::Auto => Err(Error::AutoNotSupported),
         DataFormat::Json => backend::json::read(reader),
         DataFormat::JsonLines => backend::jsonlines::read(reader),
         #[cfg(feature = "csv")]
@@ -150,8 +152,14 @@ fn open_file(path: impl AsRef<Path>) -> Result<(DataFormat, BufReader<File>), Er
 ///
 /// let user: User = read_record_from_file("user.json").unwrap();
 /// ```
-pub fn read_record_from_file<T: DeserializeOwned>(path: impl AsRef<Path>) -> Result<T, Error> {
-    let (data_format, rdr) = open_file(path)?;
+pub fn read_record_from_file<T: DeserializeOwned>(
+    path: impl AsRef<Path>,
+    mut data_format: DataFormat,
+) -> Result<T, Error> {
+    let (inferred_format, rdr) = open_file(path)?;
+    if data_format == DataFormat::Auto {
+        data_format = inferred_format;
+    }
     read_record_from_reader(rdr, data_format)
 }
 
@@ -188,7 +196,11 @@ pub fn read_record_from_file<T: DeserializeOwned>(path: impl AsRef<Path>) -> Res
 /// ```
 pub fn read_records_from_file<T: DeserializeOwned>(
     path: impl AsRef<Path>,
+    mut data_format: DataFormat,
 ) -> Result<Vec<T>, Error> {
-    let (data_format, rdr) = open_file(path)?;
+    let (inferred_format, rdr) = open_file(path)?;
+    if data_format == DataFormat::Auto {
+        data_format = inferred_format;
+    }
     read_records_from_reader(rdr, data_format)
 }
