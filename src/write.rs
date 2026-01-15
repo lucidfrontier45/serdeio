@@ -1,8 +1,26 @@
-use std::{fs::File, io::Write, path::Path};
+use std::{
+    fs::File,
+    io::{BufWriter, Write},
+    path::Path,
+};
 
 use serde::Serialize;
 
 use crate::{Error, backend, types::DataFormat};
+
+fn resolve_format(path: impl AsRef<Path>, data_format: DataFormat) -> Result<DataFormat, Error> {
+    let path_ref = path.as_ref();
+    if data_format == DataFormat::Auto {
+        Ok(DataFormat::try_from(path_ref)?)
+    } else {
+        Ok(data_format)
+    }
+}
+
+fn create_buf_writer(path: impl AsRef<Path>) -> Result<BufWriter<File>, Error> {
+    let file = File::create(path.as_ref())?;
+    Ok(BufWriter::new(file))
+}
 
 /// Writes a single record to a writer in the specified data format.
 ///
@@ -157,13 +175,9 @@ pub fn write_record_to_file<T: Serialize>(
     data_format: DataFormat,
 ) -> Result<(), Error> {
     let path = path.as_ref();
-    let final_format = if data_format == DataFormat::Auto {
-        DataFormat::try_from(path)?
-    } else {
-        data_format
-    };
-    let file = File::create(path)?;
-    write_record_to_writer(file, record, final_format)
+    let final_format = resolve_format(path, data_format)?;
+    let writer = create_buf_writer(path)?;
+    write_record_to_writer(writer, record, final_format)
 }
 
 /// Writes multiple records to a file in the data format inferred from the file extension.
@@ -207,13 +221,9 @@ pub fn write_records_to_file<'a, T: Serialize + 'a, I: IntoIterator<Item = &'a T
     data_format: DataFormat,
 ) -> Result<(), Error> {
     let path = path.as_ref();
-    let final_format = if data_format == DataFormat::Auto {
-        DataFormat::try_from(path)?
-    } else {
-        data_format
-    };
-    let file = File::create(path)?;
-    write_records_to_writer(file, records, final_format)
+    let final_format = resolve_format(path, data_format)?;
+    let writer = create_buf_writer(path)?;
+    write_records_to_writer(writer, records, final_format)
 }
 
 #[cfg(test)]

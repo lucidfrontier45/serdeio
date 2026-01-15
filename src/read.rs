@@ -8,6 +8,20 @@ use serde::de::DeserializeOwned;
 
 use crate::{Error, backend, types::DataFormat};
 
+fn resolve_format(path: impl AsRef<Path>, data_format: DataFormat) -> Result<DataFormat, Error> {
+    let path_ref = path.as_ref();
+    if data_format == DataFormat::Auto {
+        Ok(DataFormat::try_from(path_ref)?)
+    } else {
+        Ok(data_format)
+    }
+}
+
+fn open_buf_reader(path: impl AsRef<Path>) -> Result<BufReader<File>, Error> {
+    let file = File::open(path.as_ref())?;
+    Ok(BufReader::new(file))
+}
+
 /// Reads a single record from a reader and deserializes it into the specified type.
 ///
 /// This function supports formats that can represent a single record.
@@ -150,13 +164,8 @@ pub fn read_record_from_file<T: DeserializeOwned>(
     data_format: DataFormat,
 ) -> Result<T, Error> {
     let path = path.as_ref();
-    let final_format = if data_format == DataFormat::Auto {
-        DataFormat::try_from(path)?
-    } else {
-        data_format
-    };
-    let file = File::open(path)?;
-    let rdr = BufReader::new(file);
+    let final_format = resolve_format(path, data_format)?;
+    let rdr = open_buf_reader(path)?;
     read_record_from_reader(rdr, final_format)
 }
 
@@ -196,13 +205,8 @@ pub fn read_records_from_file<T: DeserializeOwned>(
     data_format: DataFormat,
 ) -> Result<Vec<T>, Error> {
     let path = path.as_ref();
-    let final_format = if data_format == DataFormat::Auto {
-        DataFormat::try_from(path)?
-    } else {
-        data_format
-    };
-    let file = File::open(path)?;
-    let rdr = BufReader::new(file);
+    let final_format = resolve_format(path, data_format)?;
+    let rdr = open_buf_reader(path)?;
     read_records_from_reader(rdr, final_format)
 }
 
