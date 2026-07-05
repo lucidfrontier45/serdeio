@@ -141,6 +141,7 @@ pub fn write_records_to_writer<'a, T: Serialize + 'a>(
 /// Writes a single record to a file in the data format inferred from the file extension.
 ///
 /// The data format is automatically inferred from the file extension.
+/// If `data_format` is set to a format other than `Auto`, that format is used as-is and the file extension is ignored.
 ///
 /// # Supported Formats
 ///
@@ -183,6 +184,7 @@ pub fn write_record_to_file<T: Serialize>(
 /// Writes multiple records to a file in the data format inferred from the file extension.
 ///
 /// The data format is automatically inferred from the file extension.
+/// If `data_format` is set to a format other than `Auto`, that format is used as-is and the file extension is ignored.
 ///
 /// # Supported Formats
 ///

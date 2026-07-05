@@ -46,14 +46,14 @@ cargo add serdeio --features csv,yaml
 
 - **Lightweight**: Minimal dependencies with feature-gated optional formats
 - **Auto-detection**: File format automatically determined from extensions (case-insensitive)
-- **Iterator support**: Efficient streaming writes without collecting into vectors
+- **Iterator support**: Efficient streaming writes for JSON Lines and CSV without collecting into vectors
 - **Serde-compatible**: Works with any struct that implements Serde traits
 - **Flexible**: Supports both single records and collections across formats
 
 # Performance
 
 - Uses `BufReader`/`BufWriter` internally for optimal I/O performance
-- Iterator-based writing enables memory-efficient streaming without allocations
+- Iterator-based writing enables memory-efficient streaming for JSON Lines and CSV without allocations
 - Format detection and parsing optimized for common use cases
 
 # API Overview

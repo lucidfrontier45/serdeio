@@ -70,6 +70,7 @@ pub fn read_record_from_reader<T: DeserializeOwned>(
         DataFormat::MessagePack => backend::messagepack::read(reader),
         #[cfg(feature = "toml")]
         DataFormat::Toml => backend::toml::read(reader),
+        #[allow(unreachable_patterns)]
         _ => Err(Error::UnsupportedFormat(data_format)),
     }
 }
@@ -132,6 +133,7 @@ pub fn read_records_from_reader<T: DeserializeOwned>(
 /// Reads a single record from a file and deserializes it into the specified type.
 ///
 /// The data format is automatically inferred from the file extension.
+/// If `data_format` is set to a format other than `Auto`, that format is used as-is and the file extension is ignored.
 ///
 /// # Supported Formats
 ///
@@ -172,6 +174,7 @@ pub fn read_record_from_file<T: DeserializeOwned>(
 /// Reads multiple records from a file and deserializes them into a vector of the specified type.
 ///
 /// The data format is automatically inferred from the file extension.
+/// If `data_format` is set to a format other than `Auto`, that format is used as-is and the file extension is ignored.
 ///
 /// # Supported Formats
 ///

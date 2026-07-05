@@ -9,6 +9,9 @@ pub fn read<T: DeserializeOwned>(reader: impl Read) -> Result<Vec<T>, Error> {
     let mut records: Vec<T> = Vec::new();
     for line in reader.lines() {
         let line = line?;
+        if line.trim().is_empty() {
+            continue;
+        }
         let record: T = serde_json::from_str(&line)?;
         records.push(record);
     }
@@ -95,5 +98,27 @@ mod test {
 {"id":2,"name":"bar","items":["d","e","f"]}"#
             .trim();
         assert_eq!(expected, data);
+    }
+
+    #[test]
+    fn test_read_with_blank_lines() {
+        let data = "\n{\"id\":1,\"name\":\"foo\",\"items\":[\"a\"]}\n\n   \n{\"id\":2,\"name\":\"bar\",\"items\":[\"d\"]}\n\n";
+        let cursor = Cursor::new(data);
+        let records: Vec<Record> = read(cursor).unwrap();
+
+        let expected = vec![
+            Record {
+                id: 1,
+                name: "foo".to_owned(),
+                items: vec!["a".to_owned()],
+            },
+            Record {
+                id: 2,
+                name: "bar".to_owned(),
+                items: vec!["d".to_owned()],
+            },
+        ];
+
+        assert_eq!(expected, records);
     }
 }
