@@ -19,3 +19,8 @@ Cargo.lock
 
 /target
 /Cargo.lock
+
+# Tool and generation artifacts
+.codegraph/
+.plan/
+.todos/
