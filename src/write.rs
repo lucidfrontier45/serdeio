@@ -82,11 +82,6 @@ pub fn write_record_to_writer<T: Serialize>(
 /// - YAML (requires `yaml` feature, as an array)
 /// - MessagePack (requires `messagepack` feature, as an array)
 ///
-/// # Note
-///
-/// TOML is not supported for multi-record operations. The TOML specification
-/// requires the root to be a table, so a bare array of records is not
-/// representable. Use the single-record TOML functions instead.
 /// # Errors
 ///
 /// Returns an error if the data format is not supported for multiple records,
@@ -115,6 +110,12 @@ pub fn write_record_to_writer<T: Serialize>(
 /// let json = String::from_utf8(buffer).unwrap();
 /// assert!(json.contains("Alice") && json.contains("Bob"));
 /// ```
+///
+/// # Note
+///
+/// TOML is not supported for multi-record operations. The TOML specification
+/// requires the root to be a table, so a bare array of records is not
+/// representable. Use the single-record TOML functions instead.
 pub fn write_records_to_writer<'a, T: Serialize + 'a>(
     writer: impl Write,
     records: impl IntoIterator<Item = &'a T>,

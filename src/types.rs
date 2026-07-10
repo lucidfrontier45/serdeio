@@ -2,6 +2,8 @@ use std::{fmt::Display, path::Path};
 
 use thiserror::Error;
 
+use crate::Error;
+
 /// Supported data formats for serialization and deserialization.
 ///
 /// This enum represents the various data formats that SerdeIO can handle.
@@ -98,8 +100,6 @@ impl Display for DataFormat {
         }
     }
 }
-
-use crate::Error;
 
 /// Resolves the effective data format, inferring it from the file extension
 /// when `data_format` is `DataFormat::Auto`.

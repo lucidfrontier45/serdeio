@@ -81,11 +81,6 @@ pub fn read_record_from_reader<T: DeserializeOwned>(
 /// - YAML (requires `yaml` feature, as an array)
 /// - MessagePack (requires `messagepack` feature, as an array)
 ///
-/// # Note
-///
-/// TOML is not supported for multi-record operations. The TOML specification
-/// requires the root to be a table, so a bare array of records is not
-/// representable. Use the single-record TOML functions instead.
 /// # Errors
 ///
 /// Returns an error if the data format is not supported for multiple records,
@@ -110,6 +105,12 @@ pub fn read_record_from_reader<T: DeserializeOwned>(
 /// let users: Vec<User> = read_records_from_reader(reader, DataFormat::Json).unwrap();
 /// assert_eq!(users.len(), 2);
 /// ```
+///
+/// # Note
+///
+/// TOML is not supported for multi-record operations. The TOML specification
+/// requires the root to be a table, so a bare array of records is not
+/// representable. Use the single-record TOML functions instead.
 pub fn read_records_from_reader<T: DeserializeOwned>(
     reader: impl Read,
     data_format: DataFormat,
