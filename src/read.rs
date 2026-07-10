@@ -6,16 +6,10 @@ use std::{
 
 use serde::de::DeserializeOwned;
 
-use crate::{Error, backend, types::DataFormat};
-
-fn resolve_format(path: impl AsRef<Path>, data_format: DataFormat) -> Result<DataFormat, Error> {
-    let path_ref = path.as_ref();
-    if data_format == DataFormat::Auto {
-        Ok(DataFormat::try_from(path_ref)?)
-    } else {
-        Ok(data_format)
-    }
-}
+use crate::{
+    Error, backend,
+    types::{DataFormat, resolve_format},
+};
 
 fn open_buf_reader(path: impl AsRef<Path>) -> Result<BufReader<File>, Error> {
     let file = File::open(path.as_ref())?;
@@ -87,6 +81,11 @@ pub fn read_record_from_reader<T: DeserializeOwned>(
 /// - YAML (requires `yaml` feature, as an array)
 /// - MessagePack (requires `messagepack` feature, as an array)
 ///
+/// # Note
+///
+/// TOML is not supported for multi-record operations. The TOML specification
+/// requires the root to be a table, so a bare array of records is not
+/// representable. Use the single-record TOML functions instead.
 /// # Errors
 ///
 /// Returns an error if the data format is not supported for multiple records,

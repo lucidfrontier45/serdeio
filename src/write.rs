@@ -6,16 +6,10 @@ use std::{
 
 use serde::Serialize;
 
-use crate::{Error, backend, types::DataFormat};
-
-fn resolve_format(path: impl AsRef<Path>, data_format: DataFormat) -> Result<DataFormat, Error> {
-    let path_ref = path.as_ref();
-    if data_format == DataFormat::Auto {
-        Ok(DataFormat::try_from(path_ref)?)
-    } else {
-        Ok(data_format)
-    }
-}
+use crate::{
+    Error, backend,
+    types::{DataFormat, resolve_format},
+};
 
 fn create_buf_writer(path: impl AsRef<Path>) -> Result<BufWriter<File>, Error> {
     let file = File::create(path.as_ref())?;
@@ -88,6 +82,11 @@ pub fn write_record_to_writer<T: Serialize>(
 /// - YAML (requires `yaml` feature, as an array)
 /// - MessagePack (requires `messagepack` feature, as an array)
 ///
+/// # Note
+///
+/// TOML is not supported for multi-record operations. The TOML specification
+/// requires the root to be a table, so a bare array of records is not
+/// representable. Use the single-record TOML functions instead.
 /// # Errors
 ///
 /// Returns an error if the data format is not supported for multiple records,

@@ -61,7 +61,7 @@ impl TryFrom<&str> for DataFormat {
             #[cfg(feature = "yaml")]
             "yaml" | "yml" => Ok(DataFormat::Yaml),
             #[cfg(feature = "messagepack")]
-            "msgpack" | "mpack" | "mpk" => Ok(DataFormat::MessagePack),
+            "msgpack" | "mpack" | "mpk" | "messagepack" => Ok(DataFormat::MessagePack),
             #[cfg(feature = "toml")]
             "toml" => Ok(DataFormat::Toml),
             _ => Err(DataFormatError::Unknown(value.to_string())),
@@ -99,6 +99,21 @@ impl Display for DataFormat {
     }
 }
 
+use crate::Error;
+
+/// Resolves the effective data format, inferring it from the file extension
+/// when `data_format` is `DataFormat::Auto`.
+pub(crate) fn resolve_format(
+    path: impl AsRef<Path>,
+    data_format: DataFormat,
+) -> Result<DataFormat, Error> {
+    if data_format == DataFormat::Auto {
+        Ok(DataFormat::try_from(path.as_ref())?)
+    } else {
+        Ok(data_format)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use std::convert::TryFrom;
@@ -132,6 +147,10 @@ mod test {
             );
             assert_eq!(
                 DataFormat::try_from("mpk").unwrap(),
+                DataFormat::MessagePack
+            );
+            assert_eq!(
+                DataFormat::try_from("messagepack").unwrap(),
                 DataFormat::MessagePack
             );
         }
