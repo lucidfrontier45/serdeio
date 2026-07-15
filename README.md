@@ -116,6 +116,10 @@ Key types:
 - `DataFormat` - Enum for specifying data formats
 - `Error` - Comprehensive error type with format-specific variants
 
+# Skills
+
+A `serdeio` skill is available for AI coding assistants in the [`skills/`](./skills) directory. The skill encodes format specifics (`DataFormat::Auto` resolution, feature-flag gating, streaming signatures, format pitfalls) so an assistant can produce correct serdeio code without inferring it from docstrings every time. Drop the `skills/serdeio/` folder into your agent's skills directory (or symlink it) to enable serdeio-aware suggestions.
+
 # Contributing
 
 Contributions are welcome! Please:
